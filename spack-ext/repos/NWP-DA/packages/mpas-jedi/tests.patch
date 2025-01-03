@@ -1,0 +1,48 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7dded4b..2911bcc 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -36,6 +36,8 @@ option( ENABLE_MPAS_DOC "Build MPAS-JEDI documentation" OFF )
+ find_package( OpenMP COMPONENTS CXX Fortran )
+ find_package( MPI REQUIRED COMPONENTS CXX Fortran )
+ find_package( Boost REQUIRED )
++# Transitive NetCDF Fortran package find issue. Missing logic in gsibec, oops, crtm, ufo, saber.
++find_package( NetCDF REQUIRED COMPONENTS C Fortran)
+ 
+ #OpenMP dependent packages
+ if(OpenMP_FOUND)
+@@ -95,7 +97,7 @@ endif()
+ 
+ ## Sources
+ add_subdirectory( src )
+-add_subdirectory( test )
++#add_subdirectory( test )
+ 
+ if( ENABLE_MPAS_DOC )
+     add_subdirectory( docs )
+diff --git a/src/mpasjedi/CMakeLists.txt b/src/mpasjedi/CMakeLists.txt
+index 9323f80..16f53b7 100644
+--- a/src/mpasjedi/CMakeLists.txt
++++ b/src/mpasjedi/CMakeLists.txt
+@@ -98,7 +98,7 @@ if(OpenMP_FOUND)
+ endif()
+ target_link_libraries( ${PROJECT_NAME} PUBLIC MPI::MPI_Fortran MPI::MPI_CXX )
+ target_link_libraries( ${PROJECT_NAME} PUBLIC Boost::boost )
+-target_link_libraries( ${PROJECT_NAME} PUBLIC MPAS::core::atmosphere )
++target_link_libraries( ${PROJECT_NAME} PUBLIC MPAS::core::core_atmosphere )
+ target_link_libraries( ${PROJECT_NAME} PUBLIC oops )
+ target_link_libraries( ${PROJECT_NAME} PUBLIC saber )
+ target_link_libraries( ${PROJECT_NAME} PUBLIC ioda )
+diff --git a/test/CMakeLists.txt b/test/CMakeLists.txt
+index 0661d1f..0e8d2d5 100644
+--- a/test/CMakeLists.txt
++++ b/test/CMakeLists.txt
+@@ -59,6 +59,8 @@ endfunction(CREATE_SYMLINK_FILENAME)
+ # Use external jedi-cmake or bundle build
+ if(DEFINED ENV{jedi_cmake_ROOT})
+   include( $ENV{jedi_cmake_ROOT}/share/jedicmake/Functions/git_functions.cmake )
++elseif(jedicmake_FOUND)
++  include( ${jedicmake_FUNCTIONS}/git_functions.cmake )
+ else()
+   include( ${CMAKE_SOURCE_DIR}/jedicmake/cmake/Functions/git_functions.cmake )
+ endif()

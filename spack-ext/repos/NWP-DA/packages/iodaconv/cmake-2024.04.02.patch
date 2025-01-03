@@ -1,0 +1,60 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 43e0d57..f327270 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -9,15 +9,18 @@
+ 
+ cmake_minimum_required( VERSION 3.12 )
+ 
+-find_package( ecbuild 3 REQUIRED HINTS ${CMAKE_CURENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild )
+ 
+ project( iodaconv VERSION 0.0.1 LANGUAGES CXX Fortran )
++list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
++set( INSTALL_LIB_DIR lib ) # For uniformity across JCSDA packages
+ 
++find_package( ecbuild 3 REQUIRED HINTS ${CMAKE_CURENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild )
+ if( ecbuild_VERSION VERSION_LESS 3.4 )
+   include(GNUInstallDirs)
+ endif()
++include( ecbuild_system NO_POLICY_SCOPE )
++ecbuild_declare_project()
+ 
+-list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
+ 
+ include( iodaconv_extra_macros )
+ include( iodaconv_compiler_flags )
+@@ -88,7 +91,7 @@ endif()
+ find_package( gsl-lite HINTS $ENV{gsl_lite_DIR} )
+ find_package( MPI )
+ 
+-find_package( ioda QUIET )
++find_package( ioda REQUIRED QUIET )
+ 
+ find_package( bufr 12.0.1 QUIET )
+ find_package( NetCDF QUIET COMPONENTS Fortran )
+diff --git a/src/gsi_ncdiag/CMakeLists.txt b/src/gsi_ncdiag/CMakeLists.txt
+index 8d65ef8..c91ff70 100644
+--- a/src/gsi_ncdiag/CMakeLists.txt
++++ b/src/gsi_ncdiag/CMakeLists.txt
+@@ -28,7 +28,7 @@ conf_targets_deps( "${programs}"
+ 
+ install( PROGRAMS ${gsi_ncdiag_bin_install_deps} DESTINATION ${CMAKE_INSTALL_BINDIR} )
+ 
+-install( FILES ${gsi_ncdiag_lib_deps} DESTINATION $(PYIODA_INSTALL_LIBDIR) )
++install( FILES ${gsi_ncdiag_lib_deps} DESTINATION ${PYIODACONV_INSTALL_LIBDIR} )
+ 
+ ecbuild_add_test( TARGET  ${PROJECT_NAME}_gsi_ncdiag_coding_norms
+                   TYPE    SCRIPT
+diff --git a/src/pyiodaconv/CMakeLists.txt b/src/pyiodaconv/CMakeLists.txt
+index d08968e..baee90f 100644
+--- a/src/pyiodaconv/CMakeLists.txt
++++ b/src/pyiodaconv/CMakeLists.txt
+@@ -40,7 +40,7 @@ conf_targets_deps( "${programs}"
+ 
+ install( PROGRAMS ${install_bin_python_scripts_deps} DESTINATION ${CMAKE_INSTALL_BINDIR} )
+ 
+-install( FILES ${pyiodaconv_scripts_deps} DESTINATION $(PYIOODACONV_INSTALL_LIBDIR) )
++install( FILES ${pyiodaconv_scripts_deps} DESTINATION ${PYIODACONV_INSTALL_LIBDIR} )
+ 
+ ecbuild_add_test( TARGET  ${PROJECT_NAME}_lib-python_coding_norms
+                   TYPE    SCRIPT

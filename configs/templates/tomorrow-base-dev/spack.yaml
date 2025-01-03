@@ -1,0 +1,28 @@
+spack:
+  concretizer:
+    unify: when_possible
+
+  view: false
+  include: []
+
+  definitions:
+  - compilers: ['%aocc', '%apple-clang', '%gcc', '%intel', '%oneapi']
+  - packages:
+    - tomorrow-base-env
+    #- gsi-env
+    #- jedi-fv3-env
+    #- jedi-mpas-env
+
+  specs:
+  - matrix:
+    - [$packages]
+    - [$compilers]
+    #exclude:
+    # Don't build ai-env and jedi-tools-env with Intel or oneAPI,
+    # some packages don't build (e.g., py-torch in ai-env doesn't
+    # build with Intel, and there are constant problems concretizing
+    # the environment
+    #- ai-env%intel
+    #- ai-env%oneapi
+    #- jedi-tools-env%intel
+    #- jedi-tools-env%oneapi

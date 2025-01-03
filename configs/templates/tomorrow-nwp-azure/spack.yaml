@@ -1,0 +1,23 @@
+spack:
+  concretizer:
+    unify: when_possible
+
+  view: false
+  include: []
+
+  definitions:
+  - compilers: ['%intel@2021.10.0 ^intel-oneapi-mpi']
+  - packages:
+    - tomorrow-fv3-env
+    - tomorrow-mpas-env
+    - tomorrow-skylab-env
+    - tomorrow-ufs-env
+    - fv3-jedi@1.8.0
+    - soca@1.7.0
+    - mpas-jedi@3.0.0
+    - pmw-radsim-env
+    - ufs-weather-model@develop ~32bit app=ATM ^fms@2023.01
+  specs:
+    - matrix:
+      - [$packages]
+      - [$compilers]
