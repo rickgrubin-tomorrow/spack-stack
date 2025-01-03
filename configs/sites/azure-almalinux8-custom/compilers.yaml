@@ -1,0 +1,80 @@
+compilers::
+- compiler: # Custom installed.
+    spec: gcc@11.2.1
+    paths:
+      cc: /opt/rh/gcc-toolset-11/root/usr/bin/gcc
+      cxx: /opt/rh/gcc-toolset-11/root/usr/bin/g++
+      f77: /opt/rh/gcc-toolset-11/root/usr/bin/gfortran
+      fc: /opt/rh/gcc-toolset-11/root/usr/bin/gfortran
+    flags: {}
+    operating_system: almalinux8
+    target: x86_64
+    modules: []
+    environment: {}
+    extra_rpaths:
+    - /opt/rh/gcc-toolset-11/root/lib
+    - /opt/rh/gcc-toolset-11/root/lib64
+- compiler: # Do not use. gcc9 versions are inconsistent across AlmaLinux images
+    spec: gcc@9.2.1
+    paths:
+      cc: /opt/rh/gcc-toolset-9/root/bin/gcc
+      cxx: /opt/rh/gcc-toolset-9/root/bin/g++
+      f77: /opt/rh/gcc-toolset-9/root/bin/gfortran
+      fc: /opt/rh/gcc-toolset-9/root/bin/gfortran
+    flags: {}
+    operating_system: almalinux8
+    target: x86_64
+    modules: []
+    environment: {}
+    extra_rpaths:
+    - /opt/rh/gcc-toolset-9/root/lib
+    - /opt/rh/gcc-toolset-9/root/lib64
+- compiler: # Do not use. gcc9 versions are inconsistent across AlmaLinux images
+    spec: gcc@9.2.0
+    paths:
+      cc: /opt/gcc-9.2.0/bin/gcc
+      cxx: /opt/gcc-9.2.0/bin/g++
+      f77: /opt/gcc-9.2.0/bin/gfortran
+      fc: /opt/gcc-9.2.0/bin/gfortran
+    flags: {}
+    operating_system: almalinux8
+    target: x86_64
+    modules: []
+    environment: {}
+    extra_rpaths:
+    - /opt/gcc-9.2.0/lib
+    - /opt/gcc-9.2.0/lib64
+- compiler: # Do not use. Incomplete compiler installation.
+    spec: gcc@8.5.0
+    paths:
+      cc: /usr/bin/gcc
+      cxx: null
+      f77: /usr/bin/gfortran
+      fc: /usr/bin/gfortran
+    flags: {}
+    operating_system: almalinux8
+    target: x86_64
+    modules: []
+    environment: {}
+    extra_rpaths: []
+#- compiler: # Do not use. Compiler should be on the image root.
+#    spec: intel@2021.9.0
+#    paths:
+#      cc: /mnt/resource/stacks/compilers/oneapi/compiler/2023.1.0/linux/bin/intel64/icc
+#      cxx: /mnt/resource/stacks/compilers/oneapi/compiler/2023.1.0/linux/bin/intel64/icpc
+#      f77: /mnt/resource/stacks/compilers/oneapi/compiler/2023.1.0/linux/bin/intel64/ifort
+#      fc: /mnt/resource/stacks/compilers/oneapi/compiler/2023.1.0/linux/bin/intel64/ifort
+#    flags: {}
+#    operating_system: almalinux8
+#    target: x86_64
+#    modules: [gcc-9.2.1]
+#    environment:
+#      prepend_path:
+#        LD_LIBRARY_PATH: /mnt/resource/stacks/compilers/oneapi/compiler/2023.1.0/linux/compiler/lib/intel64_lin
+#        LIBRARY_PATH: /mnt/resource/stacks/compilers/oneapi/compiler/2023.1.0/linux/compiler/lib/intel64_lin
+#    extra_rpaths:
+#    - /mnt/resource/stacks/compilers/oneapi/compiler/2023.1.0/linux/lib
+#    - /mnt/resource/stacks/compilers/oneapi/compiler/2023.1.0/linux/lib/x64
+#    - /mnt/resource/stacks/compilers/oneapi/compiler/2023.1.0/linux/lib/intel64_lin
+#    - /mnt/resource/stacks/compilers/oneapi/compiler/2023.1.0/linux/compiler/lib/intel64_lin
+

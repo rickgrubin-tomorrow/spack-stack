@@ -1,0 +1,124 @@
+# Pin versions and specs when building packages.
+# Disable hdf4 and hdf-eos2 for now due to build errors on Ubuntu.
+# TODO: slurm!!!
+packages:
+  autoconf:
+    externals:
+    - spec: autoconf@2.71
+      prefix: /usr
+    buildable: false
+  automake:
+    externals:
+    - spec: automake@1.16.5
+      prefix: /usr
+    buildable: false
+  binutils:
+    externals:
+    - spec: binutils@2.38
+      prefix: /usr
+    buildable: false
+  bison:
+    externals:
+    - spec: bison@3.8.2
+      prefix: /usr
+    buildable: false
+  cmake:
+    externals:
+    - spec: cmake@3.22.1
+      prefix: /usr
+    buildable: false
+  cuda:
+    buildable: false
+    externals:
+    - spec: cuda@12.2.140
+      prefix: /usr/local/cuda
+  curl:
+    externals:
+    - spec: curl@7.81.0+gssapi+ldap+nghttp2
+      prefix: /usr
+    buildable: false
+  diffutils:
+    externals:
+    - spec: diffutils@3.8
+      prefix: /usr
+    buildable: false
+  flex:
+    externals:
+    - spec: flex@2.6.4+lex
+      prefix: /usr
+    buildable: false
+  gcc:
+    externals:
+    - spec: gcc@11.4.0 languages=c,c++,fortran
+      prefix: /usr
+      extra_attributes:
+        compilers:
+          c: /usr/bin/x86_64-linux-gnu-gcc-11
+          cxx: /usr/bin/x86_64-linux-gnu-g++-11
+          fortran: /usr/bin/x86_64-linux-gnu-gfortran-11
+    buildable: false
+  git:
+    externals:
+    - spec: git@2.34.1~tcltk
+      prefix: /usr
+    buildable: false
+  git-lfs:
+    externals:
+    - spec: git-lfs@3.0.2
+      prefix: /usr
+    buildable: false
+  gmake:
+    externals:
+    - spec: gmake@4.3
+      prefix: /usr
+    buildable: false
+  go:
+    externals:
+    - spec: go@1.18.1
+      prefix: /usr
+    buildable: false
+  intel-oneapi-mpi:
+    buildable: false
+    externals:
+    - spec: intel-oneapi-mpi@2021.10.0
+      prefix: /opt/intel/oneapi
+  jedi-base-env:
+    variants: ~hdf4
+  lustre:
+    buildable: false
+    externals:
+    - spec: lustre@2.15.1_29_gbae0abe
+      prefix: /usr
+  ninja:
+    externals:
+    - spec: ninja@1.10.1
+      prefix: /usr
+    buildable: false
+  openssh:
+    externals:
+    - spec: openssh@8.9p1
+      prefix: /usr
+    buildable: false
+  openssl:
+    externals:
+    - spec: openssl@3.0.2
+      prefix: /usr
+    buildable: false
+  perl:
+    externals:
+    - spec: perl@5.34.0~cpanm+open+shared+threads
+      prefix: /usr
+    buildable: false
+  pkg-config:
+    externals:
+    - spec: pkg-config@0.29.2
+      prefix: /usr
+    buildable: false
+  tomorrow-base-env:
+    variants: ~hdf4
+  wget:
+    externals:
+    - spec: wget@1.21.2
+      prefix: /usr
+    buildable: false
+

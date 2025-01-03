@@ -12,7 +12,7 @@ import spack
 import spack.config
 import spack.environment as ev
 import spack.util.spack_yaml as syaml
-from spack.extensions.stack.stack_paths import common_path, site_path_tier1, site_path_tier2, stack_path, template_path
+from spack.extensions.stack.stack_paths import common_path, site_path_top, site_path_tier1, site_path_tier2, stack_path, template_path
 
 default_manifest_yaml = """\
 # This is a Spack Environment file.
@@ -176,7 +176,7 @@ class StackEnv(object):
 
     def site_configs_dir(self):
         site_configs_dir = None
-        for site_path in [site_path_tier1, site_path_tier2]:
+        for site_path in [site_path_top, site_path_tier1, site_path_tier2]:
             site_configs_dir = os.path.join(site_path, self.site)
             if os.path.isdir(site_configs_dir):
                 return site_configs_dir

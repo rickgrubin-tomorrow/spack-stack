@@ -1,0 +1,39 @@
+packages:
+  diffutils:
+    externals:
+    - spec: diffutils@3.6
+      prefix: /usr
+    buildable: false
+  gcc:
+    buildable: False
+    externals:
+    - spec: gcc@9.2.1 languages=c,c++,fortran
+      prefix: /opt/rh/gcc-toolset-9/root
+      extra_attributes:
+        compiler:
+          c: /opt/rh/gcc-toolset-9/root/bin/gcc
+          cxx: /opt/rh/gcc-toolset-9/root/bin/g++
+          fortran: /opt/rh/gcc-toolset-9/root/bin/gfortran
+    - spec: gcc@11.2.1 languages=c,c++,fortran
+      prefix: /opt/rh/gcc-toolset-11/root
+      extra_attributes:
+        compiler:
+          c: /opt/rh/gcc-toolset-11/root/bin/gcc
+          cxx: /opt/rh/gcc-toolset-11/root/bin/g++
+          fortran: /opt/rh/gcc-toolset-11/root/bin/gfortran
+  git-lfs:
+    externals:
+    - spec: git-lfs@3.2.0
+      prefix: /usr
+    buildable: false
+  openmpi:
+    variants: +internal-hwloc +legacylaunchers +two_level_namespace +pmi ~cuda ~cxx ~cxx_exceptions ~java ~memchecker ~static ~wrapper-rpath fabrics=ucx schedulers=slurm
+    #externals:
+    #- spec: openmpi@4.1.1%gcc@9.2.1~cuda~cxx~cxx_exceptions~java~memchecker+pmi~static~wrapper-rpath fabrics=ucx schedulers=slurm
+    #  prefix: /opt/openmpi-4.1.1
+  slurm:
+    externals:
+    - spec: slurm@22.05.8
+      prefix: /usr
+    buildable: false
+

@@ -20,6 +20,7 @@ def stack_path(*paths):
 
 
 common_path = stack_path("configs", "common")
+site_path_top = stack_path("configs", "sites")
 site_path_tier1 = stack_path("configs", "sites", "tier1")
 site_path_tier2 = stack_path("configs", "sites", "tier2")
 container_path = stack_path("configs", "containers")
