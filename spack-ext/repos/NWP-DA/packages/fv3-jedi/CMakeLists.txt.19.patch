@@ -1,0 +1,11 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -250,7 +250,7 @@ if (FV3_FORECAST_MODEL MATCHES UFS)
+ endif()
+ 
+ add_subdirectory( src )
+-add_subdirectory( test )
++#add_subdirectory( test )
+ 
+ if( ENABLE_FV3JEDI_DOC )
+     add_subdirectory( Documents )
