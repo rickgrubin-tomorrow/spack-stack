@@ -145,8 +145,6 @@ packages:
     require: '@2.1.0'
   libpng:
     require: '@1.6.37 +pic'
-  libtirpc:
-    require: '~gssapi'
   # Newest version of magics needed for oneapi compilers
   magics:
     require: "@4.15.3:"
@@ -198,10 +196,6 @@ packages:
     require: '@2.6.2 +pnetcdf'
   parallel-netcdf:
     require: '@1.12.3'
-  perl:
-      require:
-      - spec: '%gcc'
-      - spec: '@5.32.1 ~cpanm +opcode + open +shared +threads'
   pflogger:
     require: '+mpi'
   pixman:
@@ -219,10 +213,8 @@ packages:
     require: '@:42 +rust_bootstrap'
   # Introduced in https://github.com/JCSDA/spack-stack/pull/894, pin py-cython
   # to avoid duplicate packages being built (cylc dependencies soft-want @3:)
-
-  #py-cython:
-  #  require: '@0.29.36'
-      
+  py-cython:
+    require: '@0.29.36'
   # As long as we need the "delayed" variant for py-dask,
   # we are restricted to version 2021.03.0 (last one that has it)
   # and newer than 2021.01.0 because of these issues:
@@ -243,15 +235,13 @@ packages:
   py-netcdf4:
     require: '@1.7.1 +mpi'
   py-pandas:
-    require: '@2.2: +excel'
+    require: '+excel'
   # To avoid duplicate packages
   py-ruamel-yaml:
     require: '@0.17.16'
   # Pin the py-setuptools version to avoid duplicate Python packages
-
-  #py-setuptools:
-  #  require: '@69'
-  
+  py-setuptools:
+    require: '@69'
   py-setuptools-rust:
     require: '+rust_bootstrap'
   py-torch:
@@ -288,7 +278,5 @@ packages:
     - '@3.1.1'
   wrf-io:
     require: '@1.2.0'
-  xz:
-    require: '@5.2.5:'
   zstd:
     require: '@1.5.6 +programs'

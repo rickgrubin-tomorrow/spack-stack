@@ -22,17 +22,38 @@ compilers::
     - /stacks/compilers/spack-compilers-2024-08-28/envs/compilers/views/main/intel-oneapi-compilers-2024.2.1/compiler/2024.2/linux/lib
     - /stacks/compilers/spack-compilers-2024-08-28/envs/compilers/views/main/intel-oneapi-compilers-2024.2.1/compiler/2024.2/linux/lib/x64
     - /stacks/compilers/spack-compilers-2024-08-28/envs/compilers/views/main/intel-oneapi-compilers-2024.2.1/compiler/2024.2/linux/lib/intel64_lin
+
 - compiler:
-    spec: gcc@11.3.1
+    spec: gcc@=13.3.1
     paths:
-      cc: /usr/bin/gcc
-      cxx: /usr/bin/g++
-      f77: /usr/bin/gfortran
-      fc: /usr/bin/gfortran
+      cc: /opt/rh/gcc-toolset-13/root/usr/bin/gcc
+      cxx: /opt/rh/gcc-toolset-13/root/usr/bin/g++
+      f77: /opt/rh/gcc-toolset-13/root/usr/bin/gfortran
+      fc: /opt/rh/gcc-toolset-13/root/usr/bin/gfortran
     flags: {}
     operating_system: rocky9
     target: x86_64
-    modules: []
-    environment: {}
-    extra_rpaths: []
+    modules:
+      - gcc/13.3.1
+    environment:
+      prepend_path:
+        PATH: '/opt/rh/gcc-toolset-13/root/usr/bin'
+        LD_LIBRARY_PATH: '/opt/rh/gcc-toolset-13/root/lib:/opt/rh/gcc-toolset-13/root/lib64'
+    extra_rpaths:
+    - /opt/rh/gcc-toolset-13/root/lib
+    - /opt/rh/gcc-toolset-13/root/lib64
+
+#- compiler:
+#    spec: gcc@11.3.1
+#    paths:
+#      cc: /usr/bin/gcc
+#      cxx: /usr/bin/g++
+#      f77: /usr/bin/gfortran
+#      fc: /usr/bin/gfortran
+#    flags: {}
+#    operating_system: rocky9
+#    target: x86_64
+#    modules: []
+#    environment: {}
+#    extra_rpaths: []
 

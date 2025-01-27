@@ -17,6 +17,7 @@ class PyPykdtree(PythonPackage):
     version("1.3.11", sha256="6c123c7bae5213af223c529a8b4161c07eb854a6fe4038b36952bada2131ebcb")
     version("1.3.6", sha256="780b693d0555b857d7aab31e35d4293bf4ebdb9dec7a45ba4bb23b4400f626dc")
 
+    depends_on("py-cython")
     depends_on("py-setuptools", type="build")
     depends_on("py-numpy")
 

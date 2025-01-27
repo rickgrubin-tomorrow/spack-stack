@@ -17,6 +17,8 @@ packages:
     require: '%gcc'
   gmake:
     require: '%gcc'
+  glibc:
+    require: '%gcc'
   libmd:
     require: '%gcc'
   libbsd:

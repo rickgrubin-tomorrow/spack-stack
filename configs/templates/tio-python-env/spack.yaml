@@ -1,0 +1,83 @@
+spack:
+  concretizer:
+    unify: when_possible
+
+  config:
+    install_tree:
+      root: $env/install
+  modules:
+    default:
+      roots:
+        lmod: $env/install/modulefiles
+        tcl: $env/install/modulefiles
+
+  view: false
+  include:
+  - site
+  - common
+
+  definitions:
+  - compilers: ['%gcc']
+  - packages:
+    - py-numpy
+    - py-cartopy
+    - py-pandas
+    - py-black
+    - py-bokeh
+    - py-boto3
+    - py-cartopy
+    - py-click
+    - py-contourpy
+    - py-coverage
+    - py-dask
+    - py-flake8
+    - py-geopandas
+    - py-gitpython
+    - py-h5py
+    - py-pyhdf
+    - py-jinja2
+    - py-matplotlib
+    - py-nbconvert
+    - py-netcdf4
+    - py-numpy
+    - py-pandas
+    - py-pip
+    - py-pkgconfig
+    - py-progressbar2
+    - py-pycodestyle
+    - py-pysolar
+    - py-pyyaml
+    - py-requests
+    - py-rich
+    - py-ruamel-yaml
+    - py-scikit-learn
+    - py-scipy
+    - py-setuptools
+    - py-tables
+    - py-tol-colors
+    - py-tqdm
+    - py-typhon
+    - py-urllib3
+    - py-wheel
+    - py-xarray
+    - py-zarr
+    
+  # this works
+  #- py-cylc-flow
+  #- py-cylc-rose
+  #- py-cylc-uiserver
+  # below is from JCSDA/spack-stack PR 1410
+  #   configs/templates/cylc-dev/spack.yaml
+  # see also for potential changes for cython versions
+  #- py-cylc-flow@8.3.6
+  #- py-cylc-rose@1.4.2
+  #- py-cylc-uiserver@1.5.1
+
+  specs:
+  - matrix:
+    - [$packages]
+    - [$compilers]
+
+  # packages:
+  #  all:
+  #    prefer: ['%oneapi']

@@ -82,6 +82,10 @@ packages:
     externals:
     - spec: libfuse@2.9.9
       prefix: /usr
+  liblzma:
+    externals:
+    - spec: liblzma@5.2.5
+      prefix: /usr
   #libxpm:
   #  externals:
   #  - spec: libxpm@4.11.0
@@ -105,10 +109,10 @@ packages:
   #  externals:
   #  - spec: ncurses@5.9.20130511+termlib abi=5
   #    prefix: /usr
-  perl:
-    externals:
-    - spec: perl@5.32.1~cpanm+shared+threads
-      prefix: /usr
+  #perl:
+  #  externals:
+  #  - spec: perl@5.32.1~cpanm+shared+threads
+  #    prefix: /usr
   pkg-config:
     externals:
     - spec: pkg-config@1.7.3
@@ -145,10 +149,10 @@ packages:
     externals:
     - spec: wget@1.21.1
       prefix: /usr
-  xz:
-    externals:
-    - spec: xz@5.2.5
-      prefix: /usr
+  #xz:
+  #  externals:
+  #  - spec: xz@5.2.5
+  #    prefix: /usr
   zip:
     externals:
     - spec: zip@3.0
