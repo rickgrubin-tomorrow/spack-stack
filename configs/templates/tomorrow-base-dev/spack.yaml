@@ -15,7 +15,7 @@ spack:
   - compilers: ['%aocc', '%apple-clang', '%gcc', '%intel', '%oneapi']
   - packages:
     - base-env
-    - wrf-env
+    - tomorrow-base-env
 
   #packages:
   #    met:
