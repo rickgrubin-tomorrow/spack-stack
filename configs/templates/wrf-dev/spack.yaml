@@ -14,7 +14,8 @@ spack:
   definitions:
   - compilers: ['%aocc', '%apple-clang', '%gcc', '%intel', '%oneapi']
   - packages:
-    - base-env
+    # - tomorrow-base-env
+    # - base-env
     - wrf-env
 
   #packages:

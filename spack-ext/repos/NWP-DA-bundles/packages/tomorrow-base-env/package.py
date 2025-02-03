@@ -43,7 +43,6 @@ class TomorrowBaseEnv(BundlePackage):
     depends_on("gsl", type="run")
     depends_on("jasper", type="run")
     depends_on("libgeotiff", type="run")
-    depends_on("libjpeg", type="run")
     depends_on("libjpeg-turbo", type="run")
     depends_on("libpng", type="run")
     depends_on("met", type="run")
@@ -61,9 +60,11 @@ class TomorrowBaseEnv(BundlePackage):
     depends_on("py-click", type="run")
     depends_on("py-contourpy", type="run")
     depends_on("py-coverage", type="run")
+
     # depends_on("py-cylc-flow", type="run")
     # depends_on("py-cylc-rose", type="run")
     # depends_on("py-cylc-uiserver", type="run")
+
     depends_on("py-dask", type="run")
     depends_on("py-flake8", type="run")
     depends_on("py-geopandas", type="run")
@@ -74,25 +75,35 @@ class TomorrowBaseEnv(BundlePackage):
     depends_on("py-nbconvert", type="run")
     depends_on("py-netcdf4", type="run")
     depends_on("py-numpy", type="run")
-    depends_on("py-pandas", type="run")
+    # build w/o performance variant; depends on py-numba
+    #   disabled because py-numba needs an old version of LLVM that no longer compiles
+    depends_on("py-pandas ~performance", type="run")
+
+    # Set in base-env
     #depends_on("py-pip", type="run")
+    #depends_on("py-setuptools", type="run")
+    #depends_on("py-wheel", type="run")
+
     depends_on("py-pkgconfig", type="run")
     depends_on("py-progressbar2", type="run")
-    depends_on("py-pycodestyle@2.10:", type="run")
+
+    depends_on("py-pycodestyle", type="run")
     depends_on("py-pysolar", type="run")
-    depends_on("py-pyyaml@6:", type="run")
+    depends_on("py-pyyaml", type="run")
     depends_on("py-requests", type="run")
     depends_on("py-rich", type="run")
     depends_on("py-ruamel-yaml", type="run")
     depends_on("py-scikit-learn", type="run")
     depends_on("py-scipy", type="run")
-    #depends_on("py-setuptools", type="run")
+
     depends_on("py-tables", type="run")
+
+    depends_on("py-coverage-lcov", type="run")
     depends_on("py-tol-colors", type="run")
+    depends_on("py-pykdtree", type="run")
     depends_on("py-tqdm", type="run")
     depends_on("py-typhon", type="run")
     depends_on("py-urllib3", type="run")
-    #depends_on("py-wheel", type="run")
     depends_on("py-xarray", type="run")
     depends_on("py-zarr", type="run")
 
