@@ -1,0 +1,11 @@
+--- a/CMakeLists.txt	2023-10-12 11:36:48
++++ b/CMakeLists.txt	2023-10-12 11:37:13
+@@ -17,6 +17,8 @@
+ 
+ set( CMAKE_DIRECTORY_LABELS "fv3-jedi" )
+ 
++find_package( ecbuild 3.6 REQUIRED HINTS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild)
++
+ set( ECBUILD_DEFAULT_BUILD_TYPE Release )
+ set( ENABLE_OS_TESTS           OFF CACHE BOOL "Disable OS tests" FORCE )
+ set( ENABLE_LARGE_FILE_SUPPORT OFF CACHE BOOL "Disable testing of large file support" FORCE )

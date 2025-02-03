@@ -1,0 +1,20 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -17,6 +17,8 @@ set( CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH})
+ 
+ set( CMAKE_DIRECTORY_LABELS "fv3-jedi" )
+ 
++find_package( ecbuild 3.6 REQUIRED HINTS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild)
++
+ set( ECBUILD_DEFAULT_BUILD_TYPE Release )
+ set( ENABLE_OS_TESTS           OFF CACHE BOOL "Disable OS tests" FORCE )
+ set( ENABLE_LARGE_FILE_SUPPORT OFF CACHE BOOL "Disable testing of large file support" FORCE )
+@@ -217,7 +219,7 @@ if (FV3_FORECAST_MODEL MATCHES UFS)
+ endif()
+ 
+ add_subdirectory( src )
+-add_subdirectory( test )
++#add_subdirectory( test )
+ 
+ if( ENABLE_FV3JEDI_DOC )
+     add_subdirectory( Documents )

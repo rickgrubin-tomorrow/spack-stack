@@ -1,0 +1,12 @@
+--- a/test/CMakeLists.txt
++++ b/test/CMakeLists.txt
+@@ -6,6 +6,8 @@
+ # Use external jedi-cmake or bundle build
+ if(DEFINED ENV{jedi_cmake_ROOT})
+   include( $ENV{jedi_cmake_ROOT}/share/jedicmake/Functions/git_functions.cmake )
++elseif(jedicmake_FOUND)
++  include( ${jedicmake_FUNCTIONS}/git_functions.cmake )
+ else()
+   include( ${CMAKE_SOURCE_DIR}/jedicmake/cmake/Functions/git_functions.cmake )
+ endif()
+
