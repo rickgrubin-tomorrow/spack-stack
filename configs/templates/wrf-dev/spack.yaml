@@ -14,15 +14,8 @@ spack:
   definitions:
   - compilers: ['%aocc', '%apple-clang', '%gcc', '%intel', '%oneapi']
   - packages:
-    # - tomorrow-base-env
-    # - base-env
+    - base-env
     - wrf-env
-
-  #packages:
-  #    met:
-  #       require:: '@9.1.3 +python +grib2'
-  #    metplus:
-  #       require:: '@3.1.1 ^met@9.1.3'
 
   specs:
   - matrix:

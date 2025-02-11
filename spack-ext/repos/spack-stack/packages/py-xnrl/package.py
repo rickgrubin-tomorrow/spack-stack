@@ -47,8 +47,8 @@ class PyXnrl(PythonPackage):
     depends_on("py-h5py", type=("build", "run"))
     depends_on("py-matplotlib", type=("build", "run"))
     # Turn off performance variant to avoid py-numba and llvm compiler dependency
-    depends_on("py-pandas ~performance", type=("build", "run"), when="~numba")
-    depends_on("py-pandas +performance", type=("build", "run"), when="+numba")
+    depends_on("py-pandas ~performance", type=("build", "run"), when="+numba")
+    depends_on("py-pandas +performance", type=("build", "run"), when="~numba")
     depends_on("py-scipy", type=("build", "run"))
     depends_on("py-xesmf", type=("build", "run"), when="+numba")
     depends_on("py-xskillscore", type=("build", "run"), when="+numba")

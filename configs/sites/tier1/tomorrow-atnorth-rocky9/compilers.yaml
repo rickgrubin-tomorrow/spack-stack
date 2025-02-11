@@ -14,6 +14,10 @@ compilers::
     modules:
     - oneapi/2024.2.1
     environment:
+      set:
+        FC: /stacks/compilers/spack-compilers-2024-08-28/envs/compilers/views/main/intel-oneapi-compilers-2024.2.1/compiler/2024.2/bin/ifort
+        F77: /stacks/compilers/spack-compilers-2024-08-28/envs/compilers/views/main/intel-oneapi-compilers-2024.2.1/compiler/2024.2/bin/ifort
+        I_MPI_F90: /stacks/compilers/spack-compilers-2024-08-28/envs/compilers/views/main/intel-oneapi-compilers-2024.2.1/compiler/2024.2/bin/ifort
       prepend_path:
         #PATH: '/usr/bin'
         LD_LIBRARY_PATH: '/stacks/compilers/spack-compilers-2024-08-28/envs/compilers/views/main/intel-oneapi-compilers-2024.2.1/compiler/2024.2/linux/lib:/stacks/compilers/spack-compilers-2024-08-28/envs/compilers/views/main/intel-oneapi-compilers-2024.2.1/compiler/2024.2/linux/lib/x64:/stacks/compilers/spack-compilers-2024-08-28/envs/compilers/views/main/intel-oneapi-compilers-2024.2.1/compiler/2024.2/linux/lib/intel64_lin'

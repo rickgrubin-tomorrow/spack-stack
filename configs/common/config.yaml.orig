@@ -11,8 +11,7 @@ config:
   # The build stage can be purged with `spack clean --stage` and
   # `spack clean -a`, so it is important that the specified directory uniquely
   # identifies Spack staging to avoid accidentally wiping out non-Spack work.
-  # build_stage: ${SPACK_STACK_DIR}/cache/build_stage
-  build_stage: ${TMPDIR}/cache/build_stage
+  build_stage: ${SPACK_STACK_DIR}/cache/build_stage
 
   # Directory in which to run tests and store test results.
   # Tests will be stored in directories named by date/time and package
