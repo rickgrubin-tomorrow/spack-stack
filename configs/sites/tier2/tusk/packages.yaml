@@ -1,6 +1,7 @@
 packages:
-  # For addressing https://github.com/JCSDA/spack-stack/issues/1355
-  #   Use system zlib instead of spack-built zlib-ng
+
+# Modification of common packages
+  # Use system zlib instead of spack-built zlib-ng
   all:
     providers:
       zlib-api:: [zlib]
@@ -12,38 +13,34 @@ packages:
     - spec: zlib@1.2.11
       prefix: /usr
 
+# All other packages listed alphabetically
   autoconf:
     externals:
     - spec: autoconf@2.69
       prefix: /usr
   automake:
     externals:
-    - spec: automake@1.16.2
+    - spec: automake@1.15.1
       prefix: /usr
   binutils:
     externals:
-    - spec: binutils@2.35.2
+    - spec: binutils@2.43.1
       prefix: /usr
-  bison:
+  cmake:
     externals:
-    - spec: bison@3.7.4
+    - spec: cmake@3.20.4
       prefix: /usr
   coreutils:
     externals:
     - spec: coreutils@8.32
       prefix: /usr
-  cmake:
+  cvs:
     externals:
-    - spec: cmake@3.20.2
+    - spec: cvs@1.12.12
       prefix: /usr
-  # Don't use issues with openssl
-  #curl:
-  #  externals:
-  #  - spec: curl@7.76.1+gssapi+ldap+nghttp2
-  #    prefix: /usr
   diffutils:
     externals:
-    - spec: diffutils@3.7
+    - spec: diffutils@3.6
       prefix: /usr
   findutils:
     externals:
@@ -55,75 +52,89 @@ packages:
       prefix: /usr
   gawk:
     externals:
-    - spec: gawk@5.1.0
+    - spec: gawk@4.2.1
       prefix: /usr
   gettext:
     externals:
-    - spec: gettext@0.21
+    - spec: gettext@0.20.2
       prefix: /usr
   git:
     externals:
-    - spec: git@2.31.1~tcltk
+    - spec: git@2.35.3+tcltk
       prefix: /usr
   git-lfs:
     externals:
-    - spec: git-lfs@3.1.2
-      prefix: /apps/spack-managed/gcc-11.3.1/git-lfs-3.1.2-sjfqfgha27na65g3lrcqamncnryjoa7l
+    - spec: git-lfs@3.0.2
+      prefix: /usr
   gmake:
     externals:
-    - spec: gmake@4.3
+    - spec: gmake@4.2.1
       prefix: /usr
   grep:
     externals:
-    - spec: grep@3.6
+    - spec: grep@3.1
       prefix: /usr
   groff:
     externals:
     - spec: groff@1.22.4
       prefix: /usr
-  # Don't use, incomplete installation!
-  #libtool:
-  #  externals:
-  #  - spec: libtool@2.4.6
-  #    prefix: /usr
+  libtool:
+    externals:
+    - spec: libtool@2.4.6
+      prefix: /usr
   m4:
     externals:
-    - spec: m4@1.4.19
+    - spec: m4@1.4.18
       prefix: /usr
+  mysql:
+    buildable: False
+    externals:
+    - spec: mysql@8.0.31
+      prefix: /p/app/projects/NEPTUNE/spack-stack/mysql-8.0.31
+      modules:
+      - mysql/8.0.31
   openssh:
     externals:
-    - spec: openssh@8.7p1
+    - spec: openssh@8.4p1
       prefix: /usr
-  # Don't use, issues with py-cryptography
-  #openssl:
-  #  externals:
-  #  - spec: openssl@3.0.1
-  #    prefix: /usr
+    - spec: openssh@9.8p1a
+      prefix: /usr/local/krb5
   perl:
     externals:
-    - spec: perl@5.32.1~cpanm+opcode+open+shared+threads
+    - spec: perl@5.26.1~cpanm+opcode+open+shared+threads
       prefix: /usr
-  pkgconf:
+  pkg-config:
     externals:
-    - spec: pkgconf@1.7.3
+    - spec: pkg-config@0.29.2
       prefix: /usr
   qt:
+    buildable: False
     externals:
-    - spec: qt@5.15.8
-      prefix:  /apps/spack-managed/gcc-11.3.1/qt-5.15.8-d47tsna6f5dylcpblkfgw4gpn2cucihd
+    - spec: qt@5.15.2
+      prefix: /p/app/projects/NEPTUNE/spack-stack/qt-5.15.2/5.15.2/gcc_64
+      modules:
+      - qt/5.15.2
   sed:
     externals:
-    - spec: sed@4.8
+    - spec: sed@4.4
       prefix: /usr
   subversion:
     externals:
     - spec: subversion@1.14.1
       prefix: /usr
+  swig:
+    externals:
+    - spec: swig@3.0.12
+      prefix: /usr
   tar:
     externals:
     - spec: tar@1.34
       prefix: /usr
+  texinfo:
+    externals:
+    - spec: texinfo@6.5
+      prefix: /usr
   wget:
     externals:
-    - spec: wget@1.21.1
+    - spec: wget@1.20.3
       prefix: /usr

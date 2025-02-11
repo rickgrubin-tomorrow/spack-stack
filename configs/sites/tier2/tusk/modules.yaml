@@ -1,8 +1,7 @@
 modules:
   default:
     enable::
-    - lmod
-    lmod:
+    - tcl
+    tcl:
       include:
       - python
-      - openssl
