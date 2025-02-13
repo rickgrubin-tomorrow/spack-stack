@@ -18,17 +18,18 @@ class TomorrowWrfEnv(BundlePackage):
 
     version("1.0.0")
 
+    depends_on("base-env", type=("build", "run"))
     # Basic utilities
     #if sys.platform == "darwin":
     #    depends_on("libbacktrace", type="run")
-    depends_on("cmake", type="run")
-    depends_on("git", type="run")
-    depends_on("wget", type="run")
-    depends_on("curl", type="run")
+    #depends_on("cmake", type="run")
+    #depends_on("git", type="run")
+    #depends_on("wget", type="run")
+    #depends_on("curl", type="run")
 
     # I/O
     #depends_on("zlib-api", type="run")
-    depends_on("hdf5", type="run")
+    #depends_on("hdf5", type="run")
     #depends_on("netcdf-c", type="run")
     #depends_on("netcdf-fortran", type="run")
     #depends_on("parallel-netcdf", type="run")

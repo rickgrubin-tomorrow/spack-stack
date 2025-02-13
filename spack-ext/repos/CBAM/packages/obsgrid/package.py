@@ -67,8 +67,10 @@ class Obsgrid(Package):
     """
 
     homepage = "https://github.com/wrf-model/OBSGRID" 
-    url = "https://github.com/wrf-model/OBSGRID.git"
-    branch = "master"
+    git = "https://github.com/wrf-model/OBSGRID.git"
+    version("1.0", branch="master")
+    #version("master", git = "https://github.com/wrf-model/OBSGRID.git")
+    #version("1.0", sha256="d8e145e56182a1d76ede4f934e7565c99073def4780f692aed5bb84d130afd74")
 
     patch("obs_sort_module.F90.patch")
 
@@ -78,12 +80,9 @@ class Obsgrid(Package):
     requires(
         "%gcc",
         "%intel",
-        "%arm",
-        "%aocc",
-        "%fj",
         "%oneapi",
         policy="one_of",
-        msg="OBSGRID supports only the GCC, Intel, oneAPI, AMD of Fujitsu compilers",
+        msg="OBSGRID supports only the GCC, Intel, oneAPI compilers",
     )
 
     phases = ["configure", "build", "install"]
