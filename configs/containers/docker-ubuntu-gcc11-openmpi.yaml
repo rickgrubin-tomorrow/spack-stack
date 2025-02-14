@@ -9,12 +9,12 @@ spack:
 
   compilers:
   - compiler:
-      spec: gcc@13.3.0
+      spec: gcc@11.4.0
       paths:
-        cc: /usr/bin/gcc-13
-        cxx: /usr/bin/g++-13
-        f77: /usr/bin/gfortran-13
-        fc: /usr/bin/gfortran-13
+        cc: /usr/bin/gcc
+        cxx: /usr/bin/g++
+        f77: /usr/bin/gfortran
+        fc: /usr/bin/gfortran
       flags: {}
       operating_system: ubuntu24.04
       modules: []
@@ -29,16 +29,16 @@ spack:
       target: [x86_64]
       providers:
         mpi: [openmpi@5.0.5]
-      compiler: [gcc@13.3.0]
+      compiler: [gcc@11.4.0]
     gcc:
       buildable: false
       externals:
-      - spec: gcc@13.3.0
+      - spec: gcc@11.4.0
         prefix: /usr
     gcc-runtime:
       buildable: false
       externals:
-      - spec: gcc-runtime@13.3.0
+      - spec: gcc-runtime@11.4.0
         prefix: /usr
     diffutils:
       buildable: false
@@ -110,10 +110,10 @@ spack:
     os_packages:
       build:
       - bc
-      - cpp-13
-      - g++-13
-      - gcc-13
-      - gfortran-13
+      - cpp-11
+      - g++-11
+      - gcc-11
+      - gfortran-11
       - git
       - git-lfs
       - llvm-14
@@ -127,10 +127,10 @@ spack:
 
       final:
       - bc
-      - cpp-13
-      - g++-13
-      - gcc-13
-      - gfortran-13
+      - cpp-11
+      - g++-11
+      - gcc-11
+      - gfortran-11
       - git
       - git-lfs
       - llvm-14
