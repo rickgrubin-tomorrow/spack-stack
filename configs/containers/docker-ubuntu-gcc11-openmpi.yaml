@@ -159,6 +159,7 @@ spack:
         COPY spack-ext-SPACK_STACK_HASH/repos/spack-stack $SPACK_ROOT/var/spack/repos/spack-stack
         # Register spack-stack extension repo
         RUN spack repo add $SPACK_ROOT/var/spack/repos/spack-stack --scope defaults && \
+        update-alternatives --install /usr/bin/cpp cpp /usr/bin/cpp-11 100 && \
         update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 100 && \
         update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 && \
         update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-11 100 && \
@@ -186,6 +187,7 @@ spack:
         echo "export CC=gcc" >> /home/nonroot/.bashrc && \
         echo "export CXX=g++" >> /home/nonroot/.bashrc && \
         echo "export FC=gfortran" >> /home/nonroot/.bashrc && \
+        update-alternatives --install /usr/bin/cpp cpp /usr/bin/cpp-11 100 && \
         update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 100 && \
         update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 && \
         update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-11 100 && \
