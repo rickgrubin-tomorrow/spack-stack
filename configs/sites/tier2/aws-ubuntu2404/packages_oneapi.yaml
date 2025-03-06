@@ -7,6 +7,11 @@ packages:
       blas:: [openblas]
       fftw-api:: [fftw]
       lapack:: [openblas]
+  intel-oneapi-runtime:
+    buildable: false
+    externals:
+    - spec: intel-oneapi-runtime@2024.2.1%oneapi@2024.2.1
+      prefix: /opt/intel/oneapi
   intel-oneapi-mpi:
     buildable: False
   intel-oneapi-mkl:
