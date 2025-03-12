@@ -48,7 +48,7 @@ Pre-configured sites (tier 1)
 +---------------------+-----------------------+--------------------+--------------------------------------------------------+-----------------+
 |                     | Hercules              | GCC, Intel         | ``/apps/contrib/spack-stack/``                         | EPIC / JCSDA    |
 | MSU                 +-----------------------+--------------------+--------------------------------------------------------+-----------------+
-|                     | Orion                 | GCC, Intel         | ``/apps/contrib/spack-stack/``                         | EPIC / JCSDA    |
+|                     | Orion                 | Intel              | ``/apps/contrib/spack-stack/``                         | EPIC / JCSDA    |
 +---------------------+-----------------------+--------------------+--------------------------------------------------------+-----------------+
 |                     | Discover SCU16        | GCC, Intel         | ``/gpfsm/dswdev/jcsda/spack-stack/scu16/``             | JCSDA           |
 | NASA                +-----------------------+--------------------+--------------------------------------------------------+-----------------+
@@ -63,6 +63,8 @@ Pre-configured sites (tier 1)
 |                     | Gaea C6               | Intel              | ``/ncrc/proj/epic/spack-stack/c6/``                    | EPIC / NOAA-EMC |
 | NOAA (RDHPCS)       +-----------------------+--------------------+--------------------------------------------------------+-----------------+
 |                     | Hera                  | GCC, Intel         | ``/contrib/spack-stack/``                              | EPIC / NOAA-EMC |
+|                     +-----------------------+--------------------+--------------------------------------------------------+-----------------+
+|                     | Ursa                  | GCC, Intel         | ``/contrib/spack-stack/``                              | EPIC / NOAA-EMC |
 |                     +-----------------------+--------------------+--------------------------------------------------------+-----------------+
 |                     | Jet                   | GCC, Intel         | ``/contrib/spack-stack``                               | EPIC / NOAA-EMC |
 +---------------------+-----------------------+--------------------+--------------------------------------------------------+-----------------+
@@ -96,10 +98,54 @@ The following is required for building new spack environments with any supported
 
 .. code-block:: console
 
-   # To access /apps/contrib/spack-stack directory/, first login to orion-devel-1 or orion-devel-2 login node.
+   # To access /apps/contrib/spack-stack directory, first login to orion-devel-1 or orion-devel-2 login node.
    # Then sudo to role-epic account.
    module purge
 
+``spack-stack`` module files on **orion** require a one-time modification before they will properly load. These module files rely on a system-provided module file that alters the environment variable ``MODULEPATH`` in such a way that it prevents the expected loading of ``spack-stack`` modules. This is only necessary for *Intel oneAPI* environment module files. After the stack is created, modify the stack modules as follows:
+
+.. code-block:: console
+   
+   # Edit /path/to/env/install/modulefiles/Core/stack-oneapi/<version>.lua
+   # Change:
+   # load("spack-managed-x86-64_v3")
+   # load("intel-oneapi-compilers/2024.2.1")
+   # prereq("spack-managed-x86-64_v3")
+
+to
+
+.. code-block:: console
+
+   # -- load("spack-managed-x86-64_v3")
+   # prepend_path("MODULEPATH", "/apps/spack-managed-x86_64_v3-v1.0/modulefiles/Core:/apps/other/modulefiles:/apps/containers/modulefiles:/apps/licensed/modulefiles")
+   # load("intel-oneapi-compilers/2024.2.1")
+   # -- prereq("spack-managed-x86-64_v3"
+
+and
+
+.. code-block:: console
+
+   # Edit /path/to/env/install/modulefiles/oneapi/<version>/stack-intel-oneapi-mpi/<version>.lua
+   # Change:
+   # -- prerequisite modules
+   # load("spack-managed-x86-64_v3")
+   # load("intel-oneapi-compilers/2024.2.1")
+   # load("intel-oneapi-mpi/2021.13.1")
+   # prereq("spack-managed-x86-64_v3")
+   # prereq("intel-oneapi-compilers/2024.2.1")
+   # prereq("intel-oneapi-mpi/2021.13.1")
+
+to
+
+.. code-block:: console
+
+   # -- prerequisite modules
+   # -- load("spack-managed-x86-64_v3")
+   # load("intel-oneapi-compilers/2024.2.1")
+   # load("intel-oneapi-mpi/2021.13.1")
+   # -- prereq("spack-managed-x86-64_v3")
+   # prereq("intel-oneapi-compilers/2024.2.1")
+   # prereq("intel-oneapi-mpi/2021.13.1")
 
 .. _Preconfigured_Sites_Hercules:
 
@@ -111,10 +157,55 @@ The following is required for building new spack environments with any supported
 
 .. code-block:: console
 
-   # To access /apps/contrib/spack-stack directory/, first login to orion-devel-1 or orion-devel-2 login node.
+   # To access /apps/contrib/spack-stack directory, first login to hercules-devel-1 or hercules-devel-2 login node.
    # Then sudo to role-epic account.
    module purge
 
+
+``spack-stack`` module files on **hercules** require a one-time modification before they will properly load. These module files rely on a system-provided module file that alters the environment variable ``MODULEPATH`` in such a way that it prevents the expected loading of ``spack-stack`` modules. This is only necessary for *Intel oneAPI* environment module files. After the stack is created, modify the stack modules as follows:
+
+.. code-block:: console
+
+   # Edit /path/to/env/install/modulefiles/Core/stack-oneapi/<version>.lua
+   # Change:
+   # load("spack-managed-x86-64_v3")
+   # load("intel-oneapi-compilers/2024.2.1")
+   # prereq("spack-managed-x86-64_v3")
+
+to
+
+.. code-block:: console
+
+   # -- load("spack-managed-x86-64_v3")
+   # prepend_path("MODULEPATH", "/apps/spack-managed-x86_64_v3-v1.0/modulefiles/Core:/apps/other/modulefiles:/apps/containers/modulefiles:/apps/licensed/modulefiles")
+   # load("intel-oneapi-compilers/2024.2.1")
+   # -- prereq("spack-managed-x86-64_v3"
+
+and
+
+.. code-block:: console
+
+   # Edit /path/to/env/install/modulefiles/oneapi/<version>/stack-intel-oneapi-mpi/<version>.lua
+   # Change:
+   # -- prerequisite modules
+   # load("spack-managed-x86-64_v3")
+   # load("intel-oneapi-compilers/2024.2.1")
+   # load("intel-oneapi-mpi/2021.13.1")
+   # prereq("spack-managed-x86-64_v3")
+   # prereq("intel-oneapi-compilers/2024.2.1")
+   # prereq("intel-oneapi-mpi/2021.13.1")
+
+to
+
+.. code-block:: console
+
+   # -- prerequisite modules
+   # -- load("spack-managed-x86-64_v3")
+   # load("intel-oneapi-compilers/2024.2.1")
+   # load("intel-oneapi-mpi/2021.13.1")
+   # -- prereq("spack-managed-x86-64_v3")
+   # prereq("intel-oneapi-compilers/2024.2.1")
+   # prereq("intel-oneapi-mpi/2021.13.1")
 
 .. _Preconfigured_Sites_Discover_SCU16:
 
@@ -432,10 +523,8 @@ The following is required for building new spack environments with any supported
    On Hera, a dedicated node exists for ``ecflow`` server jobs (``hecflow01``). Users starting ``ecflow_server`` on the regular login nodes will see their servers being killed every few minutes, and may be barred from accessing the system.
 
 
-.. _Preconfigured_Sites_Jet:
-
 ------------------------------
-NOAA RDHPCS Jet
+NOAA RDHPCS Ursa
 ------------------------------
 
 The following is required for building new spack environments with any supported compiler on this platform.
@@ -444,6 +533,17 @@ The following is required for building new spack environments with any supported
 
    module purge
 
+.. note::
+   On Ursa, a dedicated node exists for ``ecflow`` server jobs is not currently available. It is expected that a dedicated node for ``ecflow`` will be available when Ursa is available as a production host.
+
+.. _Preconfigured_Sites_Jet:
+
+------------------------------
+NOAA RDHPCS Jet
+------------------------------
+
+.. warning::
+    Support for ``spack-stack`` on ``jet`` will cease on June 30, 2025. No new ``spack-stack`` installations will be performed as of January 1, 2025. The most recent ``spack-stack version`` on ``jet`` is ``v1.8.0``. Users wishing to use stacks newer than ``v1.8.0`` will need to use other hosts or install themselves.
 
 .. _Preconfigured_Sites_S4:
 
