@@ -3,13 +3,13 @@ COMPILERS=${COMPILERS:-"intel@2022.2.0.262 intel@19.1.3.304"}
 TEMPLATES=${TEMPLATES:-"unified-dev"}
 function spack_install_wrapper {
   logfile=$1
-  shift
+  shift 2
   if [[ " $* " =~ " global-workflow-env " ]]; then
     spack config add "config:build_stage:${SPACK_ENV:?}/stage"
     spack install gh
   fi
   spack config add 'config:build_stage:$tempdir/$user/spack-stage'
-  /opt/pbs/bin/qsub -N spack-build-cache-$RUNID-A -j oe -A NCEPLIBS-DEV -l "select=1:ncpus=6:mem=20GB,walltime=05:00:00" -q dev -V -Wblock=true -- $(which spack) $*
+  /opt/pbs/bin/qsub -N spack-build-cache-$RUNID-A -j oe -A NCEPLIBS-DEV -l "select=1:ncpus=12:mem=20GB,walltime=05:00:00" -q dev -V -Wblock=true -- ${SPACK_STACK_DIR}/util/parallel_install.sh 2 6 $*
   return $?
 }
 function alert_cmd {
