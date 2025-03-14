@@ -1,7 +1,7 @@
 [submodule "spack"]
   path = spack
-  url = https://github.com/spack/spack
-  branch = spack-stack-dev
+  url = https://github.com/AlexanderRichert-NOAA/spack
+  branch = crtm_notest_mar25
 [submodule "doc/CMakeModules"]
   path = doc/CMakeModules
   url = https://github.com/noaa-emc/cmakemodules
