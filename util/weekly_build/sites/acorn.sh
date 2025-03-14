@@ -4,7 +4,11 @@ TEMPLATES=${TEMPLATES:-"unified-dev"}
 function spack_install_wrapper {
   logfile=$1
   shift
-  if [[ " $* " =~ " global-workflow-env " ]]; then spack install go; fi
+  if [[ " $* " =~ " global-workflow-env " ]]; then
+    spack config add "config:build_stage:${SPACK_ENV:?}/stage"
+    spack install gh
+  fi
+  spack config add 'config:build_stage:$tempdir/$user/spack-stage'
   /opt/pbs/bin/qsub -N spack-build-cache-$RUNID-A -j oe -A NCEPLIBS-DEV -l "select=1:ncpus=6:mem=20GB,walltime=05:00:00" -q dev -V -Wblock=true -- $(which spack) $*
   return $?
 }
