@@ -1,4 +1,4 @@
-module load gcc/11.2.0 python/3.11.7
+module load gcc/11.2.0 python/3.8.6
 COMPILERS=${COMPILERS:-"intel@2022.2.0.262 intel@19.1.3.304"}
 TEMPLATES=${TEMPLATES:-"unified-dev"}
 function spack_install_wrapper {

@@ -250,7 +250,8 @@ class StackEnv(object):
         # Copy site config first so that it takes precedence in env
         if self.site != "none":
             self._copy_site_includes()
-            if not self.keepallcompilers:
+            # By default remove all other versions of the specified compiler
+            if not self.keepallcompilers and "@" in self.compiler:
                 self.filter_site_compilers(os.path.join(env_dir, "site", "compilers.yaml"), self.compiler)
 
         # Copy common include files
