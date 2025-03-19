@@ -4,8 +4,7 @@ import argparse
 import os
 import re
 import sys
-
-from ruamel.yaml import YAML
+import yaml
 
 parser = argparse.ArgumentParser(
   prog='filter_spack_compilers.py',
@@ -20,10 +19,8 @@ inc_or_exc_group.add_argument('--keep-only', action='store_true', help='Remove a
 inc_or_exc_group.add_argument('--keep-only-this-version', action='store_true', help='Remove all compiler specs of the same name(s) specified (i.e., have only one version of intel)')
 args = parser.parse_args()
 
-yaml = YAML(typ='rt')
-yaml.default_flow_style = False
 with open(args.yamlfile, 'r') as file:
-  raw_yaml_data = yaml.load(file)
+  raw_yaml_data = yaml.safe_load(file)
 
 if 'spack' in raw_yaml_data.keys():
   yaml_data = raw_yaml_data['spack']
@@ -53,4 +50,4 @@ bkp_path = args.yamlfile + '.bkp'
 os.rename(args.yamlfile, bkp_path)
 
 with open(args.yamlfile, 'w') as outputfile:
-  yaml.dump(yaml_data, outputfile)
+  yaml.dump(yaml_data, outputfile, sort_keys=False)
