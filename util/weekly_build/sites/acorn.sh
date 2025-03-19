@@ -21,3 +21,4 @@ PACKAGES_TO_INSTALL="ufs-weather-model-env global-workflow-env gsi-env madis"
 PADDED_LENGTH=140
 TEST_UFSWM=OFF
 BATCHACCOUNT=NCEPLIBS-DEV
+FIND_CMD="find"
