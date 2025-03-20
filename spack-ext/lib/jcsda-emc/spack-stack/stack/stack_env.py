@@ -224,7 +224,6 @@ class StackEnv(object):
         config_compiler_name = re.sub("@.*", "", compiler_to_keep)
         with open(compilers_yaml_path, "r") as f:
             compilers_yaml = syaml.load_config(f)
-        print(compilers_yaml)
         n_compilers = len(compilers_yaml["compilers"])
         for i in range(n_compilers-1, -1, -1):
             spec_tmp = compilers_yaml["compilers"][i]["compiler"]["spec"]
