@@ -33,8 +33,7 @@
     py-numpy:
       require::
       - '^[virtuals=lapack,blas] openblas'
-      - '@1.26'
-      - '%gcc'
+      - '@1.26 %gcc'
     # *DH
     eckit:
       require:
