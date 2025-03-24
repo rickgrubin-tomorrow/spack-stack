@@ -10,5 +10,5 @@ packages:
   libiconv:
     buildable: false
   wgrib2:
-    require:
+    require::
     - '~openmp'
