@@ -49,6 +49,8 @@ spack:
   - ecmwf-atlas
   - eigen
   - fckit
+  - ectrans
+  - fiat
   - fftw
   - flex
   - git-lfs
