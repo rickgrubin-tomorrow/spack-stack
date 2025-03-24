@@ -41,11 +41,7 @@ apt install -y libssl-dev
 apt install -y wget
 
 # additional packages in nvhpc setup
-cmake
-ninja-build
-pkg-config
-libtool
-python3-dev python3-venv
+apt install -y  cmake ninja-build pkg-config libtool python3-dev python3-venv
 
 exit
 ```
@@ -80,15 +76,15 @@ cd envs/nvidia-env/
 spack env activate -p .
 spack concretize 2>&1 | tee log.concretize
 ${SPACK_STACK_DIR}/util/show_duplicate_packages.py -d log.concretize
-spack install [--verbose] [--fail-fast] 2>&1 | tee log.install
-spack module tcl refresh
+spack install --verbose --fail-fast 2>&1 | tee log.install
+spack module lmod refresh
 spack stack setup-meta-modules
 ```
 
 You should now have a spack-stack environment that can be accessed by running
 
 ```bash
-module use ${SPACK_STACK_DIR}/envs/jedi-mpas-nvidia-env/install/modulefiles/Core
+module use ${SPACK_STACK_DIR}/envs/nvidia-env/install/modulefiles/Core
 ```
 
 Note this environment does not provide the usual meta modules like `jedi-mpas-env` and so on,

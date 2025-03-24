@@ -20,48 +20,66 @@ spack:
   view: false
   include: []
 
+  definitions:
+  - compilers: ['%nvhpc', '%gcc']
+  - packages:
+    - jedi-mpas-env
+
   specs:
+  - matrix:
+    - [$packages]
+    - [$compilers]
+    exclude:
+    - python%nvhpc
+    - gsibec%nvhpc
+    - ncview%nvhpc
+    - bufr%nvhpc
+    - bufr-query%nvhpc
+    - odc%nvhpc
+    - eccodes%nvhpc
+    - hdf%nvhpc
+    - jasper%nvhpc
 
-  # packages from base-env
-  # removed python
-  # removed py-* packages
-  - hdf5
-  - nccmp
-  - netcdf-c
-  - netcdf-fortran
-  - parallel-netcdf
-  - parallelio
-  - wget
+  # # packages from base-env
+  # # removed python
+  # # removed py-* packages
+  # - hdf5
+  # - nccmp
+  # - netcdf-c
+  # - netcdf-fortran
+  # - parallel-netcdf
+  # - parallelio
+  # - wget
 
-  # packages from jedi-base-env
-  # removed gsibec
-  # removed py-* packages
-  # removed ncview
-  # and these file-format libraries not needed to run jedi from IODA files
-  # removed bufr, bufr-query, netcdf-cxx4
-  # removed odc
-  # removed eccodes
-  # removed hdf
-  - bison
-  - boost
-  - ecbuild
-  - eckit
-  - ecmwf-atlas
-  - eigen
-  - fckit
-  - fftw
-  - flex
-  - git-lfs
-  - gsl-lite
-  - jedi-cmake
-  - nlohmann-json
-  - nlohmann-json-schema-validator
-  - udunits
+  # # packages from jedi-base-env
+  # # removed gsibec
+  # # removed py-* packages
+  # # removed ncview
+  # # and these file-format libraries not needed to run jedi from IODA files
+  # # removed bufr, bufr-query, netcdf-cxx4
+  # # removed odc
+  # # removed eccodes
+  # # removed hdf
+  # - bison
+  # - boost
+  # - ecbuild
+  # - eckit
+  # - ecmwf-atlas
+  # - eigen
+  # - fckit
+  # - fftw
+  # - flex
+  # - git-lfs
+  # - gsl-lite
+  # - jedi-cmake
+  # - nlohmann-json
+  # - nlohmann-json-schema-validator
+  # - udunits
 
-  # packages from jedi-mpas-env
-  # removed jasper
-  - metis
+  # # packages from jedi-mpas-env
+  # # removed jasper
+  # - metis
 
-  # added packages
+  # # added packages
   - netcdf-cxx4
   - zlib

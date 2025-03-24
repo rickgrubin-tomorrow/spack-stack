@@ -1,7 +1,7 @@
 modules:
   default:
     enable::
-    - tcl
-    tcl:
+    - lmod
+    lmod:
       include:
       - python
