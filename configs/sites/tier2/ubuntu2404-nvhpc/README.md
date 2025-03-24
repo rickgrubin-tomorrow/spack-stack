@@ -24,21 +24,7 @@ apt update
 apt upgrade -y
 
 # packages from default Ubuntu setup
-apt install -y gcc g++ gfortran gdb
-apt install -y environment-modules
-apt install -y build-essential
-apt install -y libkrb5-dev
-apt install -y m4
-apt install -y git
-apt install -y git-lfs
-apt install -y bzip2
-apt install -y unzip
-apt install -y automake
-apt install -y autopoint
-apt install -y gettext
-apt install -y libcurl4-openssl-dev
-apt install -y libssl-dev
-apt install -y wget
+apt install -y gcc g++ gfortran gdb environment-modules build-essential libkrb5-dev m4 git git-lfs bzip2 unzip automake autopoint gettext libcurl4-openssl-dev libssl-dev wget
 
 # additional packages in nvhpc setup
 apt install -y  cmake ninja-build pkg-config libtool python3-dev python3-venv

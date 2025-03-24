@@ -3,6 +3,7 @@ packages:
    externals:
     - spec: nvhpc@25.1~mpi
       prefix: /opt/nvidia/hpc_sdk/Linux_x86_64/25.1
+   require: '%nvhpc'
    buildable: False
   # Installed by apt as when following the Ubuntu NVHPC instructions
   # - standard Ubuntu packages
