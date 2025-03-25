@@ -1,0 +1,21 @@
+spack:
+  concretizer:
+    unify: when_possible
+
+  view: false
+  include:
+  - site
+  - common
+  definitions:
+  - compilers:
+    - '%oneapi'
+  - packages:
+    - base-env
+
+  specs:
+  - matrix:
+    - [$packages]
+    - [$compilers]
+  packages:
+    all:
+      prefer: ['%oneapi']
