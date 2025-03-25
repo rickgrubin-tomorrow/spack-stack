@@ -63,14 +63,15 @@ driver   : nvidia-driver-550 - distro non-free recommended
 driver   : xserver-xorg-video-nouveau - distro free builtin
 ```
 
-You should generally install the __recommended__ driver, in the example above, this is the `nvidia-driver-550` for this machine. However, the `nvidia-driver-570-server` will also work.
+You should generally install the latest version of the driver. In the example above, this the `nvidia-driver-570-server`.
+
+__NOTE__: For latest HPC SDK versions from Nvidia, you should always use the latest driver unless directed otherwise.
 
 To install the driver run:
 
 ```bash
-sudo ubuntu-drivers install --gpgpu nvidia-driver-550
-sudo apt install nvidia-driver-550
-
+sudo ubuntu-drivers install --gpgpu nvidia:driver-570
+sudo apt install nvidia-utils-570-server
 sudo reboot # The system need to be rebooted for the driver to take effect
 ```
 
