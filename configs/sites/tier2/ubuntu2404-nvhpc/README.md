@@ -12,7 +12,6 @@ hardware and provider.
 
 However Ubuntu 24.04 LTS is assumed in the site config's version of individual packages.
 
-
 ### Set up the Ubuntu environment
 
 First we install low-level build tools and system packages from the package manager, so we don't
@@ -32,6 +31,51 @@ apt install -y  cmake ninja-build pkg-config libtool python3-dev python3-venv
 exit
 ```
 
+### Installing the Nvidia Drivers
+
+Depending on your system and what GPU is installed, you may need to install the Nvidia drivers.
+
+Run the following script:
+
+```bash
+sudo apt install -y ubuntu-drivers-common
+ubuntu-drivers devices
+```
+
+This will provide a list of all vendors and their drivers. A sample output is below:
+
+```console
+== /sys/devices/pci0000:00/0000:00:1e.0 ==
+modalias : pci:v000010DEd00002237sv000010DEsd0000152Fbc03sc02i00
+vendor   : NVIDIA Corporation
+model    : GA102GL [A10G]
+manual_install: True
+driver   : nvidia-driver-470 - distro non-free
+driver   : nvidia-driver-535-server-open - distro non-free
+driver   : nvidia-driver-470-server - distro non-free
+driver   : nvidia-driver-535-server - distro non-free
+driver   : nvidia-driver-570-server - distro non-free
+driver   : nvidia-driver-570-server-open - distro non-free
+driver   : nvidia-driver-535-open - distro non-free
+driver   : nvidia-driver-535 - distro non-free
+driver   : nvidia-driver-550-open - distro non-free
+driver   : nvidia-driver-550 - distro non-free recommended
+driver   : xserver-xorg-video-nouveau - distro free builtin
+```
+
+You should generally install the __recommended__ driver, in the example above, this is the `nvidia-driver-550` for this machine. However, the `nvidia-driver-570-server` will also work.
+
+To install the driver run:
+
+```bash
+sudo ubuntu-drivers install --gpgpu nvidia-driver-550
+sudo apt install nvidia-driver-550
+
+sudo reboot # The system need to be rebooted for the driver to take effect
+```
+
+### Installing the Nvidia HPC SDK
+
 The site config describes the versions of the packages above as installed in Feb 2025.
 The specific versions may need to be periodically updated, this can be done by following the
 standard Ubuntu spack-stack setup instructions.
@@ -41,12 +85,11 @@ Then, install the Nvidia HPC SDK
 ```bash
 curl https://developer.download.nvidia.com/hpc-sdk/ubuntu/DEB-GPG-KEY-NVIDIA-HPC-SDK | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-hpcsdk-archive-keyring.gpg
 echo 'deb [signed-by=/usr/share/keyrings/nvidia-hpcsdk-archive-keyring.gpg] https://developer.download.nvidia.com/hpc-sdk/ubuntu/amd64 /' | sudo tee /etc/apt/sources.list.d/nvhpc.list
-sudo su
+sudo su -
 apt update
 apt install -y nvhpc-25-1
 exit
 ```
-
 
 ### Set up spack-stack
 
@@ -81,6 +124,3 @@ module load ectrans/1.5.0
 
 Note this environment does not provide the usual meta modules like `jedi-mpas-env` and so on,
 therefore each module must be loaded on its own.
-
-
-
