@@ -15,4 +15,4 @@ packages:
   eckit:
     require: '~openmp'
   ecmwf-atlas:
-    require: '~openmp ~fftw'  
+    require: '~openmp ~fftw'
