@@ -120,7 +120,6 @@ module use ${SPACK_STACK_DIR}/envs/nvidia-env/install/modulefiles/Core
 module load nvhpc/25.1
 module load stack-nvhpc/25.1
 module load stack-openmpi/4.1.5
-module load ectrans/1.5.0
 ```
 
 Note this environment does not provide the usual meta modules like `jedi-mpas-env` and so on,
