@@ -22,7 +22,7 @@ function alert_cmd {
   module purge # annoying libstdc++ issue
   mail -s 'spack-stack weekly build failure' alexander.richert@noaa.gov  < <(echo "Weekly spack-stack build failed in $1. Run ID: $RUNID")
 }
-PACKAGES_TO_TEST="libpng libaec jasper w3emc g2c netcdf-c netcdf-fortran"
+PACKAGES_TO_TEST="libpng libaec jasper w3emc g2c netcdf-c netcdf-fortran bufr g2 bacio ip g2tmpl nemsio sigio ncio"
 PACKAGES_TO_INSTALL="ufs-weather-model-env global-workflow-env gsi-env madis"
 PADDED_LENGTH=140
 TEST_UFSWM=OFF
