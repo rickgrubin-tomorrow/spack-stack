@@ -14,9 +14,8 @@ function spack_install_wrapper {
     walltime=03:30:00
   else # when running test step
     walltime=01:00:00
-    nocacheflag="--no-cache"
   fi
-  /opt/pbs/bin/qsub -N spack-build-cache-$RUNID -j oe -A NCEPLIBS-DEV -l "select=1:ncpus=12:mem=24GB,walltime=$walltime" -q dev -V -Wblock=true -- ${SPACK_STACK_DIR}/util/parallel_install.sh 2 6 $nocacheflag $*
+  /opt/pbs/bin/qsub -N spack-build-cache-$RUNID -j oe -A NCEPLIBS-DEV -l "select=1:ncpus=12:mem=24GB,walltime=$walltime" -q dev -V -Wblock=true -- ${SPACK_STACK_DIR}/util/parallel_install.sh 2 6 $*
   return $?
 }
 function alert_cmd {
