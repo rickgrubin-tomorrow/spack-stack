@@ -40,5 +40,3 @@ BUILD_CACHE=${BUILD_CACHE:-local-binary}
 
 echo "Source cache mirror name/directory: ${SOURCE_CACHE}"
 echo "Build cache mirror name/directory: ${BUILD_CACHE}"
-
-shopt -s extglob # needed in several scripts
