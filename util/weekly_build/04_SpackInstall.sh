@@ -40,7 +40,7 @@ for compiler in $COMPILERS; do
     spack_install_wrapper log.install install $INSTALL_OPTS $PACKAGES_TO_INSTALL
     # Force install test packages, do not use build cache:
     if [[ ! -z "${PACKAGES_TO_TEST}" ]]; then
-      spack_install_wrapper log.install-and-test install $INSTALL_OPTS --no-cache --overwrite --test root $PACKAGES_TO_TEST
+      spack_install_wrapper log.install-and-test install $INSTALL_OPTS --no-cache --overwrite --yes-to-all --test root $PACKAGES_TO_TEST
     fi
   done
 done
