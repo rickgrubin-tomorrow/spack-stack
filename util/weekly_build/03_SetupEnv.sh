@@ -12,7 +12,7 @@ set -x
 
 for compiler in $COMPILERS; do
   for template in $TEMPLATES; do
-    [[ ${compiler} == *"@="* ]] && envname=build-$template-${compiler/@=/-} || envname=build-$template-${compiler/@/-}
+    envname=build-$template-${compiler/@?(=)/-}
     envdir=$RUNDIR/$RUNID/envs/$envname
     echo "Setting up environment $envname in $envdir"
     if [ ! -d $envdir ]; then
