@@ -197,7 +197,9 @@ packages:
     require:
     - '@0.3.24'
   openmpi:
-    require: '~internal-hwloc +two_level_namespace'
+    require:
+    - '@5.0.7' 
+    - '~internal-hwloc +two_level_namespace'
   openssl:
     require: '+shared'
   p4est:
