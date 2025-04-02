@@ -15,7 +15,7 @@ function spack_install_wrapper {
   else # when running test step
     walltime=01:00:00
   fi
-  if [ "$SINGLE_NODE" == yes ]; then
+  if [ "$SINGLE_NODE" == YES ]; then
     spack config add 'config:locks:false'
     /opt/pbs/bin/qsub -N spack-build-cache-$RUNID -j oe -A NCEPLIBS-DEV -l "select=1:ncpus=8:mem=20GB,walltime=$walltime" -q dev -V -Wblock=true -- ${SPACK_STACK_DIR}/util/parallel_install.sh 1 8 $*
   else
