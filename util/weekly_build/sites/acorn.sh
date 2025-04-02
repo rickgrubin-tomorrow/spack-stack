@@ -15,7 +15,12 @@ function spack_install_wrapper {
   else # when running test step
     walltime=01:00:00
   fi
-  /opt/pbs/bin/qsub -N spack-build-cache-$RUNID -j oe -A NCEPLIBS-DEV -l "select=1:ncpus=12:mem=24GB,walltime=$walltime" -q dev -V -Wblock=true -- ${SPACK_STACK_DIR}/util/parallel_install.sh 2 6 $*
+  if [ "$SINGLE_NODE" == yes ]; then
+    spack config add 'config:locks:false'
+    /opt/pbs/bin/qsub -N spack-build-cache-$RUNID -j oe -A NCEPLIBS-DEV -l "select=1:ncpus=8:mem=20GB,walltime=$walltime" -q dev -V -Wblock=true -- ${SPACK_STACK_DIR}/util/parallel_install.sh 1 8 $*
+  else
+    /opt/pbs/bin/qsub -N spack-build-cache-$RUNID -j oe -A NCEPLIBS-DEV -l "select=1:ncpus=18:mem=30GB,walltime=$walltime" -q dev -V -Wblock=true -- ${SPACK_STACK_DIR}/util/parallel_install.sh 3 6 $*
+  fi
   return $?
 }
 function alert_cmd {
