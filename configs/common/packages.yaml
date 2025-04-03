@@ -40,15 +40,18 @@ packages:
       when: '%intel@:2020'
       message: '2.0.5 is the last version to use C++14, use with Intel Classic 2020 and earlier'
   cmake:
-    version: ['3.27.9']
-    require: '+ownlibs'
+    require:
+    - '@3.29:'
+    - '+ownlibs'
   # Attention - when updating also check the various jcsda-emc-bundles env packages
   crtm:
     require: '+fix'
   ecbuild:
     require: '@3.7.2'
   eccodes:
-    require: '@2.33.0 +png +tools'
+    require:
+    - '@2.33.0'
+    - '+netcdf +png +tools'
   ecflow:
     require:
     - '@5.11.4 +ui'
