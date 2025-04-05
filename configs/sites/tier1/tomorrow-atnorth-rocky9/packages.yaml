@@ -71,6 +71,10 @@ packages:
     externals:
     - spec: git-lfs@2.13.3
       prefix: /usr
+  glibc:
+    externals:
+    - spec: glibc@2.34
+      prefix: /
   gmake:
     externals:
     - spec: gmake@4.3

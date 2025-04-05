@@ -134,8 +134,8 @@ packages:
   hdf:
     require: '@4.2.15 +external-xdr ~fortran ~netcdf'
   hdf5:
-    #require: '@1.14.3 +hl +fortran +mpi +threadsafe ~szip'
-    require: '@1.14.3 +hl +fortran +mpi +threadsafe +szip'
+    require: '@1.14.3 +hl +fortran +mpi +threadsafe ~szip'
+    #require: '@1.14.3 +hl +fortran +mpi +threadsafe +szip'
   # Newer versions of hdf-eos2 require manual downloading, avoid
   hdf-eos2:
     require: '@2.20v1.00'
@@ -264,8 +264,12 @@ packages:
     require: '@69'
   py-setuptools-rust:
     require: '+rust_bootstrap'
+  py-tensorflow:
+    require: '~cuda ~nccl +numa ~xla'
   py-torch:
-    require: '+custom-protobuf ~mkldnn'
+    require: '~cuda +custom-protobuf ~mkldnn ~distributed ~openmp'
+  py-torchvision:
+    require: '+png +jpeg'
   # To avoid duplicate packages
   py-urllib3:
     require: '@1.26.12'

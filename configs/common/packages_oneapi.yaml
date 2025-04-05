@@ -22,5 +22,4 @@ packages:
   libbsd:
     require: '%gcc'
   qt:
-    require:
-    - '%gcc'
+    require: '%gcc'

@@ -12,7 +12,8 @@ spack:
   - site
   - common
   definitions:
-  - compilers: ['%aocc', '%apple-clang', '%gcc', '%intel', '%oneapi']
+  #- compilers: ['%aocc', '%apple-clang', '%gcc', '%intel', '%oneapi']
+  - compilers: ['%oneapi']
   - packages:
     - tomorrow-base-env
 
@@ -26,3 +27,6 @@ spack:
   - matrix:
     - [$packages]
     - [$compilers]
+  packages:
+    all:
+      prefer: ['%oneapi']

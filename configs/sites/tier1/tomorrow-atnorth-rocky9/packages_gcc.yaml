@@ -1,21 +1,22 @@
 packages:
   all:
-    compiler:: [gcc@13.3.1]
+    compiler:: [gcc@12.2.1]
     providers:
-      #mpi:: [intel-oneapi-mpi@2021.13]
+      mpi:: [openmpi@4.1.4]
       # Remove the next three lines to switch to intel-oneapi-mkl
       blas:: [openblas]
       fftw-api:: [fftw]
       lapack:: [openblas]
   mpi:
     buildable: False
-  intel-oneapi-mpi:
-    buildable: False
+  openmpi:
+    buildable: false
     externals:
-    - spec: intel-oneapi-mpi@2021.13%oneapi@2024.2.1
+    - spec: openmpi@4.1.4%gcc@12.2.1
       modules:
-      - impi/2021.13
-      prefix: /stacks/compilers/spack-compilers-2024-08-28/opt/spack/linux-rocky9-cascadelake/gcc-11.3.1/intel-oneapi-compilers-2024.2.1-6y273rugj2eusfku2ppgdbqebwusahqc
+      - openmpi/4.1.4
+      prefix: /usr/mpi/gcc/openmpi-4.1.4-hfi
+
   ectrans:
     require::
     - '@1.2.0 ~mkl +fftw'
@@ -24,9 +25,8 @@ packages:
     - '@1.2.1 ~mkl'
   py-numpy:
     require::
-    #- '@:1.23 ^openblas'
+    - '@1.26'
     - '^openblas'
-  # *DH
   zlib-ng:
     require:
       - '~shared'

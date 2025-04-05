@@ -28,20 +28,30 @@ packages:
     - spec: intel-oneapi-runtime@2024.2.1%oneapi@2024.2.1
       prefix: /stacks/compilers/spack-compilers-2024-08-28/envs/compilers/views/main/intel-oneapi-compilers-2024.2.1/compiler/2024.2
       modules: []
+
+  bazel:
+    require: '%gcc'
   ectrans:
     require::
-    - '@1.2.0 ~mkl +fftw'
+      - '@1.2.0 ~mkl +fftw'
   gsibec:
     require::
-    - '@1.2.1 ~mkl'
+      - '@1.2.1 ~mkl'
+  PyTMatrix:
+    require:
+      - '%gcc'
   py-numpy:
     require::
-    - '@1.26:6'
+    - '@1.26'
     - '^openblas'
   #py-scipy:
-  #  require:
-  #    - '%gcc'
-  # *DH
+  #  require: '%gcc'
+  py-torch:
+    require:
+      - '%gcc ~distributed ~mpi ~openmp ~tensorpipe'
+  py-torchvision:
+    require:
+      - '%gcc'
   zlib-ng:
     require:
       - '~shared'
