@@ -44,6 +44,7 @@ class PmwRadsimEnv(BundlePackage):
     depends_on("py-cython", type=("build", "run"))
     depends_on("py-fsspec", type="run")
     #depends_on("gdal +python")
+    depends_on("gdal +python")
     depends_on("py-h5netcdf")
     depends_on("py-nbsphinx")
     depends_on("py-numexpr")
