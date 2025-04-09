@@ -12,13 +12,9 @@ SPACK_STACK_URL=https://github.com/stiggy87/spack-stack.git
 SPACK_STACK_BRANCH=feature/hdf5-weekly-build-testing
 
 KEEP_WEEKLY_BUILD_DIR="NO"
-PADDED_LENGTH=200
 
-function alert_cmd {
-  # module purge # annoying libstdc++ issue
-  # mail -s 'spack-stack weekly build failure' sgrace@ucar.edu  < <(echo "Weekly spack-stack build failed in $1. Run ID: $RUNID")
-  echo "Weekly failure!"
-}
-
-PACKAGES_TO_TEST="hdf5 openmpi"
-PACKAGES_TO_INSTALL="crtm esmf ewok-env global-workflow-env jedi-fv3-env gsi-env"
+PACKAGES_TO_TEST="hdf5"
+PACKAGES_TO_INSTALL="ewok-env global-workflow-env jedi-fv3-env"
+FIND_CMD="find"
+TEST_UFSWM=OFF
+KEEP_WEEKLY_BUILD_DIR="YES"
