@@ -201,7 +201,7 @@ packages:
     - '@0.3.24'
   openmpi:
     require:
-    - '@5.0.5' 
+    - '@5.0.7' 
     - '~internal-hwloc +two_level_namespace'
   openssl:
     require: '+shared'
