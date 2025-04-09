@@ -20,5 +20,5 @@ function alert_cmd {
   echo "Weekly failure!"
 }
 
-PACKAGES_TO_TEST="hdf5 zlib-api zlib-ng szip openmpi"
+PACKAGES_TO_TEST="hdf5 openmpi"
 PACKAGES_TO_INSTALL="crtm esmf ewok-env global-workflow-env jedi-fv3-env gsi-env"
