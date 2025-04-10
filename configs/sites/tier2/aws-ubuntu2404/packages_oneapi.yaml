@@ -14,11 +14,11 @@ packages:
       prefix: /opt/intel/oneapi
   intel-oneapi-mpi:
     buildable: False
-  intel-oneapi-mkl:
-    buildable: False
     externals:
     - spec: intel-oneapi-mpi@2021.13%oneapi@2024.2.1
       prefix: /opt/intel/oneapi
+  intel-oneapi-mkl:
+    buildable: False
   ectrans:
     require::
     - '@1.5.0 ~mkl +fftw'
