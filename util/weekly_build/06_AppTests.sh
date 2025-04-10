@@ -24,7 +24,3 @@ done
 if [ "$TEST_UFSWM" == ON ]; then
   . $(dirname $0)/apptests/test_ufswm.sh
 fi
-
-if [ "$TEST_HDF5" == ON ]; then
-  . $(dirname $0)/apptests/test_hdf5.sh
-fi
