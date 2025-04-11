@@ -6,8 +6,6 @@ TEMPLATES=${TEMPLATES:-"unified-dev"}
 # module --force purge
 # umask 0022
 
-source /opt/intel/oneapi/setvars.sh --force
-
 SPACK_STACK_URL=https://github.com/stiggy87/spack-stack.git
 SPACK_STACK_BRANCH=feature/hdf5-weekly-build-testing
 
