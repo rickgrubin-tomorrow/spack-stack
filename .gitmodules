@@ -1,7 +1,7 @@
 [submodule "spack"]
   path = spack
   url = https://github.com/stiggy87/spack
-  branch = feature/hdf5-weekly-build-testing
+  branch = feature/update-openmpi
 [submodule "doc/CMakeModules"]
   path = doc/CMakeModules
   url = https://github.com/noaa-emc/cmakemodules
