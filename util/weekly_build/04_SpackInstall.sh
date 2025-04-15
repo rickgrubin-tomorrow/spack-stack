@@ -11,7 +11,7 @@ set +x
 set -x
 
 if [ "$REUSE_BUILD_CACHE" == YES ]; then
-  cache_flag="--no-check-signature --use-buildcache package:never,dependencies:auto"
+  cache_flag="--no-check-signature"
 else
   cache_flag="--no-cache"
 fi
@@ -38,7 +38,7 @@ for compiler in $COMPILERS; do
     fi
     # Install test packages; do not use build cache for tested packages:
     if [[ ( ! -z "${PACKAGES_TO_TEST}" ) && ( "$DISABLE_TESTING" != YES ) ]]; then
-      spack_install_wrapper log.install-and-test install $INSTALL_OPTS --overwrite --yes-to-all --test root $PACKAGES_TO_TEST
+      spack_install_wrapper log.install-and-test install --use-buildcache package:never,dependencies:auto $INSTALL_OPTS --overwrite --yes-to-all --test root $PACKAGES_TO_TEST
     fi
     # Install the whole stack
     spack_install_wrapper log.install install $INSTALL_OPTS $PACKAGES_TO_INSTALL
