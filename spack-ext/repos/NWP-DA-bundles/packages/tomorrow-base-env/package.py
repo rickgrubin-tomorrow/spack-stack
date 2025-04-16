@@ -18,96 +18,33 @@ class TomorrowBaseEnv(BundlePackage):
 
     version("2024.8.21")
 
-    # Variants
-    variant("hdf4", default=True, description="Build hdf4 library and python hdf module")
-    variant("mapl", default=True, description="Build MAPL")
-
     # Basic utilities
     depends_on("libbacktrace", type="run")
 
-    #depends_on("cmake", type="run")
-    #depends_on("curl", type="run")
-    #depends_on("git", type="run")
-    #depends_on("wget", type="run")
-    depends_on("base-env", type="run")
+    depends_on("cmake", type="run")
+    depends_on("curl", type="run")
+    depends_on("git", type="run")
+    depends_on("wget", type="run")
 
-    # I/O
-    depends_on("hdf-eos2", type="run", when="+hdf4")
-    depends_on("madis", type="run")
+    depends_on("pkgconfig", type=("build", "run"))
 
-    # Utilities
-    depends_on("bufr", type="run")
-    depends_on("cdo", type="run")
-    depends_on("esmf", type="run")
-    depends_on("g2c", type="run")
-    depends_on("gsl", type="run")
+    depends_on("hdf5", type="run")
     depends_on("jasper", type="run")
-    depends_on("libgeotiff", type="run")
-    depends_on("libjpeg-turbo", type="run")
     depends_on("libpng", type="run")
-    depends_on("met", type="run")
-    depends_on("metplus", type="run")
+    depends_on("libjpeg-turbo", type="run")
+    depends_on("nccmp", type="run")
     depends_on("nco", type="run")
-    depends_on("ninja", type="run")
-    depends_on("rsync", type="run")
-    depends_on("sfcio", type="run")
+    depends_on("netcdf-c", type="run")
+    depends_on("netcdf-fortran", type="run")
+    depends_on("parallel-netcdf", type="run")
+    depends_on("parallelio", type="run")
+    depends_on("zlib", type="run")
 
     # Python
-    depends_on("py-black", type="run")
-    depends_on("py-bokeh", type="run")
-    depends_on("py-boto3", type="run")
-    depends_on("py-cartopy", type="run")
-    depends_on("py-click", type="run")
-    depends_on("py-contourpy", type="run")
-    depends_on("py-coverage", type="run")
-
-    # depends_on("py-cylc-flow", type="run")
-    # depends_on("py-cylc-rose", type="run")
-    # depends_on("py-cylc-uiserver", type="run")
-
-    depends_on("py-dask", type="run")
-    depends_on("py-flake8", type="run")
-    depends_on("py-geopandas", type="run")
-    depends_on("py-gitpython", type="run")
-    depends_on("py-h5py", type="run")
-    depends_on("py-jinja2", type="run")
-    depends_on("py-matplotlib", type="run")
-    depends_on("py-nbconvert", type="run")
-    depends_on("py-netcdf4", type="run")
-    depends_on("py-numpy", type="run")
-    # build w/o performance variant; depends on py-numba
-    #   disabled because py-numba needs an old version of LLVM that no longer compiles
-    depends_on("py-pandas ~performance", type="run")
-
-    # Set in base-env
-    #depends_on("py-pip", type="run")
-    #depends_on("py-setuptools", type="run")
-    #depends_on("py-wheel", type="run")
-
-    depends_on("py-pkgconfig", type="run")
-    depends_on("py-progressbar2", type="run")
-
-    depends_on("py-pycodestyle", type="run")
-    depends_on("py-pysolar", type="run")
-    depends_on("py-pyyaml", type="run")
-    depends_on("py-requests", type="run")
-    depends_on("py-rich", type="run")
-    depends_on("py-ruamel-yaml", type="run")
-    depends_on("py-scikit-learn", type="run")
-    depends_on("py-scipy", type="run")
-
-    depends_on("py-tables", type="run")
-
-    depends_on("py-coverage-lcov", type="run")
-    depends_on("py-tol-colors", type="run")
-    depends_on("py-pykdtree", type="run")
-    depends_on("py-tqdm", type="run")
-    depends_on("py-typhon", type="run")
-    depends_on("py-urllib3", type="run")
-    depends_on("py-xarray", type="run")
-    depends_on("py-zarr", type="run")
-
-    # TODO:
-    # py-geoviews, py-hvplot, py-holoviews, py-emcpy
+    depends_on("python@3.7:", type="run")
+    depends_on("py-pip", type="run")
+    depends_on("py-wheel", type="run")
+    depends_on("py-setuptools", type="run")
+    depends_on("py-setuptools-scm", type="run")
 
     # There is no need for install() since there is no code.

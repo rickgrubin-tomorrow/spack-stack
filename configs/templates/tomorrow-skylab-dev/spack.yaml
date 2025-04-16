@@ -5,13 +5,12 @@ spack:
   view: false
   include:
   - site
-  - common
+   - common
+
   definitions:
-  - compilers:
-    #- '%oneapi'
-    - '%intel'
+  - compilers: ['%oneapi']
   - packages:
-    - base-env
+    - tomorrow-skylab-env
 
   specs:
   - matrix:
@@ -19,5 +18,4 @@ spack:
     - [$compilers]
   packages:
     all:
-      #prefer: ['%oneapi']
-      prefer: ['%intel']
+      prefer: ['%oneapi']

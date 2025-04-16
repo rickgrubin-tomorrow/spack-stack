@@ -21,6 +21,8 @@ packages:
     buildable: False
     externals:
     - spec: intel-oneapi-mkl@2023.1.0.2%intel@2021.10.0
+      modules:
+      - mkl/2023.1.0
       prefix: /opt/intel/oneapi
   #intel-oneapi-runtime:
   #  externals:
@@ -41,7 +43,7 @@ packages:
       - '@1.2.1 ~mkl'
   py-numpy:
     require::
-    - '@1.26:6'
+    - '@1.26:'
     - '^openblas'
   #py-scipy:
   #  require: '%gcc'

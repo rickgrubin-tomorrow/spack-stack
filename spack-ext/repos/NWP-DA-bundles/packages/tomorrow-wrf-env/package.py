@@ -14,33 +14,16 @@ class TomorrowWrfEnv(BundlePackage):
     homepage = "https://github.com/jcsda/spack-stack"
     git = "https://github.com/jcsda/spack-stack.git"
 
-    maintainers("climbfuji", "AlexanderRichert-NOAA")
+    maintainers("rickgrubin-tomorrow")
 
     version("1.0.0")
 
-    depends_on("base-env", type=("build", "run"))
-    # Basic utilities
-    #if sys.platform == "darwin":
-    #    depends_on("libbacktrace", type="run")
-    #depends_on("cmake", type="run")
-    #depends_on("git", type="run")
-    #depends_on("wget", type="run")
-    #depends_on("curl", type="run")
+    depends_on("tomorrow-base-env", type=("build", "run"))
 
-    # I/O
-    #depends_on("zlib-api", type="run")
-    #depends_on("hdf5", type="run")
-    #depends_on("netcdf-c", type="run")
-    #depends_on("netcdf-fortran", type="run")
-    #depends_on("parallel-netcdf", type="run")
-    #depends_on("parallelio +pnetcdf", type="run")
-    #depends_on("nccmp", type="run")
-
-    # Python
-    #depends_on("python@3.7:", type="run")
-    #depends_on("py-pip", type="run")
-    #depends_on("py-wheel", type="run")
-    #depends_on("py-setuptools", type="run")
-    #depends_on("py-setuptools-scm", type="run")
+    depends_on("bufr", type="run")
+    depends_on("wrf-io", type="run")
+    depends_on("wrf", type="run")
+    depends_on("wps", type="run")
+    #depends_on("wrfda", type="run")
 
     # There is no need for install() since there is no code.

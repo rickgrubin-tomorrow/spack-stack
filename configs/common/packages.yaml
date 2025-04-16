@@ -149,6 +149,8 @@ packages:
     require: '@1.4.0'
   landsfcutil:
     require: '@2.4.2'
+  libbacktrace:
+    require: '+shared'
   libjpeg-turbo:
     require: '@2.1.0'
   libpng:
@@ -301,6 +303,10 @@ packages:
   wgrib2:
     require:
     - '@3.6.0'
+  wrf:
+    require: 'build_type=dmpar'
+  wrfda:
+    require: 'build_type=dmpar'
   wrf-io:
     require: '@1.2.0'
   zstd:

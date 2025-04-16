@@ -12,11 +12,12 @@ spack:
   - site
   - common
   definitions:
-  - compilers: ['%gcc', '%intel', '%oneapi']
+  #- compilers: ['%gcc', '%intel', '%oneapi']
+  - compilers: ['%intel']
   - packages:
-    - base-env
-    - wrf-env
-    - cbam-env
+    - tomorrow-base-env
+    - tomorrow-wrf-env
+    - tomorrow-cbam-env
 
   specs:
   - matrix:

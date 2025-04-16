@@ -3,6 +3,7 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
+import fnmatch
 import glob
 import re
 import sys
@@ -275,7 +276,7 @@ class Wrfda(Package):
     phases = ["configure", "build", "install"]
 
     def setup_run_environment(self, env):
-        env.set("WRF_HOME", self.prefix)
+        env.set("WRFDA_HOME", self.prefix)
         env.append_path("PATH", self.prefix.main)
         env.append_path("PATH", self.prefix.tools)
 
@@ -492,7 +493,15 @@ class Wrfda(Package):
         )
 
         print(result_buf)
-        if "Executables successfully built" in result_buf:
+
+        # https://www2.mmm.ucar.edu/wrf/users/docs/user_guide_v4/v4.4/users_guide_chap6.html#_Installing_WRFDA_for_1
+        # check number of *.exe files:
+        #   43 in var/build
+        #    1 in var/obsproc/src
+        dir_path = spec.build_directory
+        count = len(fnmatch.filter(os.listdir(dir_path + '/var/build'), '*.exe')) +
+                    len(fnmatch.filter(os.listdir(dir_path + '/var/obsproc/src'), '*.exe'))
+        if count == 44:
             return True
 
         return False

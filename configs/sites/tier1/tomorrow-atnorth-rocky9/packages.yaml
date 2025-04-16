@@ -71,7 +71,7 @@ packages:
     externals:
     - spec: git-lfs@2.13.3
       prefix: /usr
-  glibc:
+  gGlibc:
     externals:
     - spec: glibc@2.34
       prefix: /
@@ -154,6 +154,10 @@ packages:
     externals:
     - spec: tar@1.34
       prefix: /usr
+  tcsh:
+    externals:
+    - spec: tcsh@6.22.03
+      prefix: /usr
   #texinfo:
   #  externals:
   #  - spec: texinfo@5.1
@@ -162,6 +166,10 @@ packages:
   #  externals:
   #  - spec: texlive@20130530
   #    prefix: /usr
+  time:
+    externals:
+    - spec: time@1.9
+      prefix: /usr
   wget:
     externals:
     - spec: wget@1.21.1
