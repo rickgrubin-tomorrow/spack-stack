@@ -499,8 +499,9 @@ class Wrfda(Package):
         #   43 in var/build
         #    1 in var/obsproc/src
         dir_path = spec.build_directory
-        count = len(fnmatch.filter(os.listdir(dir_path + '/var/build'), '*.exe')) +
-                    len(fnmatch.filter(os.listdir(dir_path + '/var/obsproc/src'), '*.exe'))
+        da_dirp = dir_path + '/var/build'
+        obsp_dirp = dir_path + '/var/obsproc/src'
+        count = len(fnmatch.filter(os.listdir(da_dirp), '*.exe')) + len(fnmatch.filter(os.listdir(obsp_dirp), '*.exe'))
         if count == 44:
             return True
 
