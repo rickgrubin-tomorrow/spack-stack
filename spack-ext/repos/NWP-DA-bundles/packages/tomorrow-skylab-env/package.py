@@ -17,15 +17,19 @@ class TomorrowSkylabEnv(BundlePackage):
     maintainers = ['rhoneyager-tomorrow']
 
     version('1.0.1')
-    version('1.0.0')
-    version('0.0.1')
+    #version('1.0.0')
+    #version('0.0.1')
 
     depends_on('jedi-fv3-env', type='run')
     depends_on('jedi-mpas-env', type='run')
     depends_on('tomorrow-base-env', type='run')
-    depends_on('fms@2023.04:+deprecated_io', type='run', when='@1.0.2:')
-    depends_on('fms@2023.04+deprecated_io', type='run', when='@1.0.1')
+    #depends_on('fms@2023.04:+deprecated_io', type='run', when='@1.0.2:')
+    #depends_on('fms@2023.04+deprecated_io', type='run', when='@1.0.1')
+    depends_on('fms', type='run')
     depends_on('fms@release-jcsda', type='run', when='@1.0.0')
+
+    depends_on('py-skyfield', type='run')
+    depends_on('py-sgp4', type='run')
 
     # There is no need for install() since there is no code.
 
