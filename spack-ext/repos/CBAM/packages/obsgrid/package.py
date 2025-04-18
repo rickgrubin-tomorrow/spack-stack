@@ -38,17 +38,16 @@ class Obsgrid(Package):
 
     homepage = "https://github.com/climacell/CBAM_OBSGRID"
     git = "git@github.com:climacell/CBAM_OBSGRID.git"
-    #version("1.0", branch="master")
-    version("1.0", branch="spack")
+    url="https://github.com/climacell/CBAM_OBSGRID.git"
+    version("1.0", branch="master")
 
     depends_on("netcdf-c")
     depends_on("netcdf-fortran")
 
     requires(
-        "%gcc",
         "%intel",
         policy="one_of",
-        msg="OBSGRID supports only the GCC, Intel compilers",
+        msg="OBSGRID supports only the Intel classic compilers",
     )
 
     phases = ["configure", "build", "install"]
