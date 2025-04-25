@@ -5,6 +5,7 @@
 
 import fnmatch
 import glob
+import os
 import re
 import sys
 import time
@@ -498,7 +499,7 @@ class Wrfda(Package):
         # check number of *.exe files:
         #   43 in var/build
         #    1 in var/obsproc/src
-        dir_path = spec.build_directory
+        dir_path = self.stage.source_path
         da_dirp = dir_path + '/var/build'
         obsp_dirp = dir_path + '/var/obsproc/src'
         count = len(fnmatch.filter(os.listdir(da_dirp), '*.exe')) + len(fnmatch.filter(os.listdir(obsp_dirp), '*.exe'))

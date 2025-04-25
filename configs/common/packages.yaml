@@ -303,6 +303,8 @@ packages:
   wgrib2:
     require:
     - '@3.6.0'
+  wps:
+    require: 'build_type=dmpar'
   wrf:
     require: 'build_type=dmpar'
   wrfda:
