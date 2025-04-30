@@ -71,13 +71,12 @@ class Obsgrid(Package):
         pass
 
     def run_compile_script(self):
-        csh = which("csh")
+        sh = which("sh")
 
         # Now run the compile script and track the output to check for
-        # failure/success We need to do this because upstream use `make -i -k`
-        # and the custom compile script will always return zero regardless of
-        # success or failure
-        result_buf = csh(
+        # failure/success. We need to do this because the custom compile 
+        # script will always return zero regardless of success or failure
+        result_buf = sh(
             "./compile",
             "obsgrid",
             output=str,
@@ -87,7 +86,7 @@ class Obsgrid(Package):
         print(result_buf)
 
         # check for obsgrid.exe 
-        dir_path = self.stage.source_path + '/src'
+        dir_path = self.stage.source_path + '/bin'
         if len(fnmatch.filter(os.listdir(dir_path), '*.exe')) == 1:
             return True
 
@@ -101,4 +100,4 @@ class Obsgrid(Package):
 
     def install(self, spec, prefix):
         # Save all install files as many are needed
-        install_tree(".", prefix)
+        copu_tree("bin", prefix.bin)
