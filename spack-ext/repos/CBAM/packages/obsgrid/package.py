@@ -71,12 +71,12 @@ class Obsgrid(Package):
         pass
 
     def run_compile_script(self):
-        sh = which("sh")
+        csh = which("csh")
 
         # Now run the compile script and track the output to check for
         # failure/success. We need to do this because the custom compile 
         # script will always return zero regardless of success or failure
-        result_buf = sh(
+        result_buf = csh(
             "./compile",
             "obsgrid",
             output=str,
@@ -100,4 +100,4 @@ class Obsgrid(Package):
 
     def install(self, spec, prefix):
         # Save all install files as many are needed
-        copu_tree("bin", prefix.bin)
+        copy_tree("bin", prefix.bin)
