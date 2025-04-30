@@ -98,6 +98,4 @@ class LittleR(Package):
             raise InstallError("Compile failed. Check the output log for details.")
 
     def install(self, spec, prefix):
-        with working_dir(self.build_directlry):
-            copy_tree("bin", prefix.bin)
-            #install_tree(".", prefix)
+        copy_tree("bin", prefix.bin)
