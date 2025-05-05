@@ -14,10 +14,15 @@ class Metar(MakefilePackage):
     provide a snapshot of current weather conditions at a specific location.
     """
 
-    homepage = "https://github.com/climacell/CBAM_OBSGRID"
-    git = "git@github.com:climacell/CBAM_OBSGRID.git"
-    url="https://github.com/climacell/CBAM_OBSGRID.git"
-    version("1.0", branch="master")
+    homepage = "https://github.com/climacell/CBAM_METAR"
+    git = "git@github.com:climacell/CBAM_METAR.git"
+    url="https://github.com/climacell/CBAM_METAR.git"
+    version("1.0", branch="main")
+
+    phases = ["configure", "build", "install"]
+
+    def configure(self, spec, prefix):
+        pass
 
     def build(self, spec, prefix):
         make("all")
