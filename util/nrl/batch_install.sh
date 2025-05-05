@@ -24,11 +24,13 @@ usage() {
   echo "      if not set, authoritative build caches are used"
   echo "  -u  Flag to update bootstrap and source caches;"
   echo "      requires role 'dev' and mode 'build'"
+  echo "  -e  Continue builds/install in existing environments;"
+  echo "      by default, exit with an error if already exist"
   echo "  -h  display this help"
   echo
 }
 
-while getopts r:m:d:c:uh flag
+while getopts r:m:d:c:uhe flag
 do
   case "${flag}" in
     r)
@@ -46,6 +48,9 @@ do
     u)
       SPACK_STACK_UPDATE_DEV_CACHES="true"
       ;;
+    e)
+      SPACK_STACK_IGNORE_ENV_EXIST="true"
+      ;;
     *)
       usage
       exit 1
@@ -59,6 +64,7 @@ echo "  SPACK_STACK_MODE:                            ${SPACK_STACK_MODE:-not set
 echo "  SPACK_STACK_ENVIRONMENT_DIRS:                ${SPACK_STACK_ENVIRONMENT_DIRS:-${SPACK_STACK_DIR}/envs}"
 echo "  SPACK_STACK_BUILDCACHE_DIR:                  ${SPACK_STACK_BUILDCACHE_DIR:-use default caches}"
 echo "  SPACK_STACK_UPDATE_DEV_CACHES:               ${SPACK_STACK_UPDATE_DEV_CACHES:-false}"
+echo "  SPACK_STACK_IGNORE_ENV_EXIST:                ${SPACK_STACK_IGNORE_ENV_EXIST:-false}"
 
 if [[ -z ${SPACK_STACK_ROLE} ]]; then
   echo "ERROR, SPACK_STACK_ROLE not defined. Provide -r ROLE as argument"
@@ -103,36 +109,42 @@ case ${SPACK_STACK_BATCH_HOST} in
     SPACK_STACK_BATCH_TEMPLATES=("neptune-dev" "unified-dev" "cylc-dev")
     SPACK_STACK_MODULE_CHOICE="lmod"
     SPACK_STACK_BOOTSTRAP_MIRROR="/neptune_diagnostics/spack-stack/bootstrap-mirror"
+    SPACK_STACK_CARGO_MIRROR="/neptune_diagnostics/spack-stack/cargo-mirror"
     ;;
   blueback)
     SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.1" "oneapi@=2025.0.4" "gcc@=13.3.0")
     SPACK_STACK_BATCH_TEMPLATES=("neptune-dev" "unified-dev" "cylc-dev")
     SPACK_STACK_MODULE_CHOICE="tcl"
     SPACK_STACK_BOOTSTRAP_MIRROR="/p/cwfs/projects/NEPTUNE/spack-stack/bootstrap-mirror"
+    SPACK_STACK_CARGO_MIRROR="/p/cwfs/projects/NEPTUNE/spack-stack/cargo-mirror"
     ;;
   cole)
     SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.1" "gcc@=12.3.0")
     SPACK_STACK_BATCH_TEMPLATES=("neptune-dev")
     SPACK_STACK_MODULE_CHOICE="tcl"
     SPACK_STACK_BOOTSTRAP_MIRROR="/p/work1/heinzell/spack-stack/bootstrap-mirror"
+    SPACK_STACK_CARGO_MIRROR="/p/work1/heinzell/spack-stack/cargo-mirror"
     ;;
   narwhal)
     SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.0" "intel@=2021.10.0" "gcc@=12.2.0")
     SPACK_STACK_BATCH_TEMPLATES=("neptune-dev" "unified-dev" "cylc-dev")
     SPACK_STACK_MODULE_CHOICE="tcl"
     SPACK_STACK_BOOTSTRAP_MIRROR="/p/cwfs/projects/NEPTUNE/spack-stack/bootstrap-mirror"
+    SPACK_STACK_CARGO_MIRROR="/p/cwfs/projects/NEPTUNE/spack-stack/cargo-mirror"
     ;;
   nautilus)
     SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.1" "oneapi@=2025.0.0" "intel@=2021.5.0" "gcc@=11.2.1")
     SPACK_STACK_BATCH_TEMPLATES=("neptune-dev" "unified-dev" "cylc-dev")
     SPACK_STACK_MODULE_CHOICE="tcl"
     SPACK_STACK_BOOTSTRAP_MIRROR="/p/cwfs/projects/NEPTUNE/spack-stack/bootstrap-mirror"
+    SPACK_STACK_CARGO_MIRROR="/p/cwfs/projects/NEPTUNE/spack-stack/cargo-mirror"
     ;;
   tusk)
     SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.0" "gcc@=12.1.0")
     SPACK_STACK_BATCH_TEMPLATES=("neptune-dev")
     SPACK_STACK_MODULE_CHOICE="tcl"
     SPACK_STACK_BOOTSTRAP_MIRROR="/p/work1/heinzell/spack-stack/bootstrap-mirror"
+    SPACK_STACK_CARGO_MIRROR="/p/work1/heinzell/spack-stack/cargo-mirror"
     ;;
   blackpearl)
     # DH* TODO UPDATE oneifx@=2024.1.2 to oneifx@=2025.x.y
@@ -140,12 +152,14 @@ case ${SPACK_STACK_BATCH_HOST} in
     SPACK_STACK_BATCH_TEMPLATES=("neptune-dev" "unified-dev" "cylc-dev")
     SPACK_STACK_MODULE_CHOICE="tcl"
     SPACK_STACK_BOOTSTRAP_MIRROR="/home/dom/prod/spack-bootstrap-mirror"
+    SPACK_STACK_CARGO_MIRROR="/home/dom/prod/spack-cargo-mirror"
     ;;
   bounty)
     SPACK_STACK_BATCH_COMPILERS=("oneapi@=2025.0.0" "gcc@=13.3.1" "aocc@=5.0.0" "clang@=19.1.4")
     SPACK_STACK_BATCH_TEMPLATES=("neptune-dev" "unified-dev" "cylc-dev")
     SPACK_STACK_MODULE_CHOICE="tcl"
     SPACK_STACK_BOOTSTRAP_MIRROR="/home/dom/prod/spack-bootstrap-mirror"
+    SPACK_STACK_CARGO_MIRROR="/home/dom/prod/spack-cargo-mirror"
     ;;
   *)
     echo "ERROR, host ${SPACK_STACK_BATCH_HOST} not configured"
@@ -245,6 +259,8 @@ fi
 host=${SPACK_STACK_BATCH_HOST}
 module_choice=${SPACK_STACK_MODULE_CHOICE}
 bootstrap_mirror_path=${SPACK_STACK_BOOTSTRAP_MIRROR}
+cargo_mirror_path=${SPACK_STACK_CARGO_MIRROR}
+export CARGO_HOME=${cargo_mirror_path}
 
 if [[ -z ${SPACK_STACK_ENVIRONMENT_DIRS} ]]; then
   environment_dirs=${PWD}/envs
@@ -266,19 +282,23 @@ fi
 
 if [[ "${SPACK_STACK_MODE}" == "install" ]]; then
   update_bootstrap_mirror="false"
+  update_cargo_mirror="false"
   update_source_cache="false"
   update_build_cache="false"
   reuse_build_cache="true"
 elif [[ "${SPACK_STACK_MODE}" == "build" ]]; then
   if [[ "${SPACK_STACK_ROLE}" == "ops" ]]; then
     update_bootstrap_mirror="false"
+    update_cargo_mirror="false"
     update_source_cache="false"
   elif [[ "${SPACK_STACK_ROLE}" == "dev" ]]; then
     if [[ ${SPACK_STACK_UPDATE_DEV_CACHES} == "true" ]]; then
       update_bootstrap_mirror="true"
+      update_cargo_mirror="true"
       update_source_cache="true"
     else
       update_bootstrap_mirror="false"
+      update_cargo_mirror="false"
       update_source_cache="false"
     fi
   else
@@ -291,6 +311,8 @@ else
   echo "ERROR, invalid mode ${SPACK_STACK_MODE}"
   exit 1
 fi
+
+ignore_env_exist=${SPACK_STACK_IGNORE_ENV_EXIST:-false}
 
 # For Cray systems, capture the default=current environment (loaded modules)
 # so that it can be restored between building stacks for different compilers
@@ -380,8 +402,14 @@ for compiler in "${SPACK_STACK_BATCH_COMPILERS[@]}"; do
 
     # Bail out if the environment already exists
     if [[ -d ${env_dir} ]]; then
-      echo "ERROR, environment ${env_dir} already exists"
-      exit 1
+      if [[ ${ignore_env_exist} == "true" ]]; then
+        env_exists="true"
+      else
+        echo "ERROR, environment ${env_dir} already exists"
+        exit 1
+      fi
+    else
+      env_exists="false"
     fi
 
     # Reset environment
@@ -619,12 +647,14 @@ for compiler in "${SPACK_STACK_BATCH_COMPILERS[@]}"; do
     source setup.sh
     spack clean -a
 
-    spack stack create env --name=${env_name} \
-                           --site=${host} \
-                           --compiler=${compiler_name}@=${compiler_version} \
-                           --template=${template} \
-                           --dir=${environment_dirs} \
-                           2>&1 | tee log.create.${env_name}.001
+    if [[ ! ${env_exists} == "true" ]]; then
+      spack stack create env --name=${env_name} \
+                             --site=${host} \
+                             --compiler=${compiler_name}@=${compiler_version} \
+                             --template=${template} \
+                             --dir=${environment_dirs} \
+                             2>&1 | tee log.create.${env_name}.001
+    fi
     spack env activate -p ${env_dir}
 
     # Workaround for building cylc environment on Narwhal: We need to use GNU
@@ -648,7 +678,7 @@ for compiler in "${SPACK_STACK_BATCH_COMPILERS[@]}"; do
         exit 1
       fi
       spack bootstrap mirror --binary-packages ${tmp_bootstrap_mirror_path} 2>&1 | tee log.bootstrap-mirror.${env_name}.001
-      rsync -av ${tmp_bootstrap_mirror_path}/ ${bootstrap_mirror_path}/
+      rsync -a ${tmp_bootstrap_mirror_path}/ ${bootstrap_mirror_path}/
       rm -fr ${tmp_bootstrap_mirror_path}
       # Update buildcache index
       spack buildcache update-index ${bootstrap_mirror_path}/bootstrap_cache
@@ -659,8 +689,8 @@ for compiler in "${SPACK_STACK_BATCH_COMPILERS[@]}"; do
       echo "ERROR, directory ${bootstrap_mirror_path} not found"
       exit 1
     fi
-    spack bootstrap add --trust local-sources ${bootstrap_mirror_path}/metadata/sources
-    spack bootstrap add --trust local-binaries ${bootstrap_mirror_path}/metadata/binaries
+    spack bootstrap add --trust local-sources ${bootstrap_mirror_path}/metadata/sources || true
+    spack bootstrap add --trust local-binaries ${bootstrap_mirror_path}/metadata/binaries || true
 
     # Check that the site has mirrors configured for local source and build caches,
     # and extract the local path on disk. Need to strip leading "file://" from path
@@ -700,12 +730,18 @@ for compiler in "${SPACK_STACK_BATCH_COMPILERS[@]}"; do
     fi
 
     # Check for duplicate packages
-    ./util/show_duplicate_packages.py -i crtm -i crtm-fix -i esmf -i mapl -d log.concretize.${env_name}.001
+    ./util/show_duplicate_packages.py -i crtm -i crtm-fix -i esmf -i mapl
 
     # Update local source cache if requested
     if [[ "${update_source_cache}" == "true"* ]]; then
       echo "Updating local source cache ..."
       spack mirror create -a -d ${source_mirror_path}
+    fi
+
+    # Update local cargo mirror if requested
+    if [[ "${update_cargo_mirror}" == "true"* ]]; then
+      echo "Updating local cargo mirror ..."
+      ./util/fetch_cargo_deps.py
     fi
 
     # Install the environment with the correct flags
@@ -774,6 +810,9 @@ for compiler in "${SPACK_STACK_BATCH_COMPILERS[@]}"; do
     fi
     if [[ "${update_build_cache}" == "true" ]]; then
       fix_permissions ${host} ${binary_mirror_path} 0
+    fi
+    if [[ "${update_cargo_mirror}" == "true" ]]; then
+      fix_permissions ${host} ${cargo_mirror_path} 0
     fi
 
     # Clean up
