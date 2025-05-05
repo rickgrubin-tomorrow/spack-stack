@@ -1,0 +1,316 @@
+diff -Naur convert_geotiff-0.1/convert_geotiff.c convert_geotiff/convert_geotiff.c
+--- convert_geotiff-0.1/convert_geotiff.c	2013-10-09 13:03:55.000000000 +0000
++++ convert_geotiff/convert_geotiff.c	2025-05-05 19:01:40.000000000 +0000
+@@ -57,6 +57,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <stddef.h>
+ 
+ const int GEO_DEBUG=0;
+ 
+@@ -81,7 +82,8 @@
+ 
+ int main (int argc, char * argv[]) {
+   
+-  int c,i,j;
++  int64_t idx_swp_1, idx_swp_2, i, j;
++  int c;
+   int categorical_range,border_width,word_size,isigned,tile_size;
+   float scale,missing;
+   GeogridIndex idx;
+@@ -185,9 +187,9 @@
+     print_usage(stderr,argv[0]);
+     exit(EXIT_FAILURE);
+   }
+-  
++
+   strcpy(filename,argv[optind]);
+-  
++ 
+   /* open geotiff file */
+   TIFFSetWarningHandler(NULL);
+   file=XTIFFOpen(filename,"r");
+@@ -235,9 +237,11 @@
+   if(!idx.bottom_top) {
+     for(i=0;i<idx.ny/2;i++) {
+       for(j=0;j<idx.nx;j++) {
+-	swp=buffer[i*idx.nx+j];
+-	buffer[i*idx.nx+j]=buffer[(idx.ny-i-1)*idx.nx+j];
+-	buffer[(idx.ny-i-1)*idx.nx+j]=swp;
++	idx_swp_1 = i*idx.nx+j;
++        idx_swp_2 = (idx.ny-i-1)*idx.nx+j;
++        swp=buffer[idx_swp_1];
++        buffer[idx_swp_1]=buffer[idx_swp_2];
++        buffer[idx_swp_2]=swp;
+       }
+     }
+     idx.bottom_top=1;
+diff -Naur convert_geotiff-0.1/geogrid_index.h convert_geotiff/geogrid_index.h
+--- convert_geotiff-0.1/geogrid_index.h	2013-10-09 13:03:55.000000000 +0000
++++ convert_geotiff/geogrid_index.h	2025-05-05 19:04:05.000000000 +0000
+@@ -13,6 +13,8 @@
+ #ifndef _GEOGRID_INDEX_H_
+ #define _GEOGRID_INDEX_H_
+ 
++#include <stdint.h>
++
+ /* okay, so c does have a bool type... */
+ #ifndef __cplusplus
+ typedef unsigned int bool;
+@@ -36,13 +38,13 @@
+ /* geogrid index struct */
+ typedef struct {
+   int tile_bdr;  /* border to put around each data tile */
+-  int nx;        /* global image size in longitude (x) */
+-  int ny;        /* global image size in latitude (y) */
+-  int nz;        /* global image size vertically (z) */
+-  int tx;        /* tile size in longitude (x) */
+-  int ty;        /* tile size in latitude (y) */
+-  int tz_s;      /* tile starting index in z (unused for 2d images) */
+-  int tz_e;      /* tile ending index in z (unused for 2d images) */
++  int64_t nx;    /* global image size in longitude (x) */
++  int64_t ny;    /* global image size in latitude (y) */
++  int64_t nz;    /* global image size vertically (z) */
++  int64_t tx;    /* tile size in longitude (x) */
++  int64_t ty;    /* tile size in latitude (y) */
++  int64_t tz_s;  /* tile starting index in z (unused for 2d images) */
++  int64_t tz_e;  /* tile ending index in z (unused for 2d images) */
+   bool isigned;  /* data is signed, true: yes, false: no */
+   bool endian;   /* output endianness is, true: little, false: big */
+   float scalefactor; /* amount to scale output before truncating to int */
+@@ -60,8 +62,8 @@
+   
+   float dx;         /* pixel resolution in x */
+   float dy;         /* pixel resolution in y */
+-  int known_x;      /* index location of known_lon */
+-  int known_y;      /* index location of known_lat */
++  int64_t known_x;      /* index location of known_lon */
++  int64_t known_y;      /* index location of known_lat */
+   float known_lat;  /* known latitude */
+   float known_lon;  /* known longitude */
+   float stdlon;     /* standard (central) longitude */
+@@ -69,4 +71,4 @@
+   float truelat2;   /* second latitude in projection spec */
+ } GeogridIndex;
+ 
+-#endif
+\ No newline at end of file
++#endif
+diff -Naur convert_geotiff-0.1/geogrid_tiles.c convert_geotiff/geogrid_tiles.c
+--- convert_geotiff-0.1/geogrid_tiles.c	2013-10-09 13:03:55.000000000 +0000
++++ convert_geotiff/geogrid_tiles.c	2025-05-05 19:09:29.000000000 +0000
+@@ -41,8 +41,8 @@
+ /* common code for buffer conversion */
+ #define _CONV_BUF                     \
+ float *tptr;                          \
+-int z,y,x;                            \
+-int i0,i1,nimg;                       \
++int64_t z,y,x;                            \
++int64_t i0,i1,nimg;                       \
+ tptr=tile;                            \
+ i0=gettilestart(itile_x,itile_y,idx); \
+ nimg=idx.nx*idx.ny*nzsize(idx);       \
+@@ -218,13 +218,13 @@
+ /* Extracts information from a GeogridIndex structure to 
+    construct tiles from global buffer. */
+ void write_tile(
+-  int itile_x,            /* tile column number */
+-  int itile_y,            /* tile row number */
++  int64_t itile_x,            /* tile column number */
++  int64_t itile_y,            /* tile row number */
+   const GeogridIndex idx, /* initialized index structure for metadata */
+   float *arr              /* tile data buffer */
+                 )
+ {
+-  int itx,ity,isgn,endian,nx,ny,nz;
++  int64_t itx,ity,isgn,endian,nx,ny,nz;
+   
+   /* get global index for construction tile file name */
+   itx=itile_x*idx.tx+1;
+@@ -247,16 +247,16 @@
+ }
+ 
+ /* get the number of tiles in a row or column */
+-int ntiles(int n, int t)
++int64_t ntiles(int n, int t)
+ {
+   return ( ceil( (double) n / (double) t ) );
+ }
+ 
+-int nxtiles(const GeogridIndex idx) {
++int64_t nxtiles(const GeogridIndex idx) {
+   return (ntiles(idx.nx,idx.tx));
+ }
+ 
+-int nytiles(const GeogridIndex idx) {
++int64_t nytiles(const GeogridIndex idx) {
+   return (ntiles(idx.ny,idx.ty));
+ }
+ 
+@@ -271,20 +271,20 @@
+ /* get the global index of the first element of a tile (including border) 
+    the index returned might be < 0 or > the global image size, due to the 
+    border, the calling routine should should set invalid indices to missing */
+-int gettilestart(
+-  int itile_x,             /* tile column number */
+-  int itile_y,             /* tile row number */
++int64_t gettilestart(
++  int64_t itile_x,             /* tile column number */
++  int64_t itile_y,             /* tile row number */
+   const GeogridIndex idx   /* index structure */
+                  ) {
+-  int sx,                  /* global column number */
+-      sy;                  /* global row number */
++  int64_t sx,                  /* global column number */
++          sy;                  /* global row number */
+   sx=itile_x * idx.tx - idx.tile_bdr;
+   sy=itile_y * idx.ty - idx.tile_bdr;
+   return (sy * idx.nx + sx);
+ }
+ 
+ /* get global strides */
+-int globalystride(const GeogridIndex idx) {
++int64_t globalystride(const GeogridIndex idx) {
+   return (idx.nx);
+ }
+ 
+@@ -308,10 +308,10 @@
+ /* get the requested tile from the global buffer,
+    cast to float */
+ void get_tile_from_d(
+-  int itile_x,int itile_y,  /* tile column/row */
+-  const GeogridIndex idx,   /* index structure */
+-  const double *databuf,    /* global data buffer (double) */
+-  float *tile               /* tile data buffer */
++  int64_t itile_x,int64_t itile_y,  /* tile column/row */
++  const GeogridIndex idx,           /* index structure */
++  const double *databuf,            /* global data buffer (double) */
++  float *tile                       /* tile data buffer */
+                      ) {
+   const double *gptr;
+   _CONV_BUF
+@@ -365,7 +365,7 @@
+                       const GeogridIndex idx, /* index structure */
+                       float *databuf          /* global data buffer (float) */
+                       ) {
+-  long i;
++  int64_t i;
+   float *ptr;
+   if (idx.categorical) {                  /* for categorical fields... */
+     for(i=0;i<idx.nx*idx.ny*idx.nz;i++) { /* loop over all pixels */
+@@ -378,8 +378,8 @@
+   }
+ }
+ 
+-void set_tile_to(float* tile,const GeogridIndex idx,int itile_x,int itile_y) {
+-  int n,i;
++void set_tile_to(float* tile,const GeogridIndex idx,int64_t itile_x,int64_t itile_y) {
++  int64_t n,i;
+   float v0;
+   n=(idx.tx + 2*idx.tile_bdr) * (idx.ty + 2*idx.tile_bdr) * nzsize(idx);
+   v0=itile_x + itile_y * 10;
+diff -Naur convert_geotiff-0.1/geogrid_tiles.h convert_geotiff/geogrid_tiles.h
+--- convert_geotiff-0.1/geogrid_tiles.h	2013-10-09 13:03:55.000000000 +0000
++++ convert_geotiff/geogrid_tiles.h	2025-05-05 19:11:20.000000000 +0000
+@@ -17,22 +17,22 @@
+ #endif
+ 
+   void write_index_file(const char *,const GeogridIndex);
+-  void write_tile(int,int,const GeogridIndex,float*);
+-  int ntiles(int,int);
+-  int nxtiles(const GeogridIndex);
+-  int nytiles(const GeogridIndex);
+-  int nzsize(const GeogridIndex);
+-  int gettilestart(int,int,const GeogridIndex);
+-  int globalystride(const GeogridIndex);
+-  int globalzstride(const GeogridIndex);
++  void write_tile(int64_t,int64_t,const GeogridIndex,float*);
++  int64_t ntiles(int,int);
++  int64_t nxtiles(const GeogridIndex);
++  int64_t nytiles(const GeogridIndex);
++  int64_t nzsize(const GeogridIndex);
++  int64_t gettilestart(int,int,const GeogridIndex);
++  int64_t globalystride(const GeogridIndex);
++  int64_t globalzstride(const GeogridIndex);
+   float *alloc_tile_buffer(const GeogridIndex);
+-  void get_tile_from_f(int,int,const GeogridIndex,const float*,float*);
++  void get_tile_from_f(int64_t,int64_t,const GeogridIndex,const float*,float*);
+   void convert_from_f(const GeogridIndex,const float*);
+   void process_buffer_f(const GeogridIndex,float*);
+-  void set_tile_to(float*,const GeogridIndex,int,int);
++  void set_tile_to(float*,const GeogridIndex,int64_t,int64_t);
+ 
+ #ifdef __cplusplus
+ }
+ #endif
+   
+-#endif
+\ No newline at end of file
++#endif
+diff -Naur convert_geotiff-0.1/write_geogrid.c convert_geotiff/write_geogrid.c
+--- convert_geotiff-0.1/write_geogrid.c	2013-10-09 13:03:55.000000000 +0000
++++ convert_geotiff/write_geogrid.c	2025-05-05 19:12:07.000000000 +0000
+@@ -45,18 +45,18 @@
+ 
+ int write_geogrid(
+                  const float * rarray,          /* The array to be written */
+-                 const int * nx,                /* x-dimension of the array */
+-                 const int * ix,                /* starting x-index of the tile */
+-                 const int * ny,                /* y-dimension of the array */
+-                 const int * iy,                /* starting y-index of the tile */
+-                 const int * nz,                /* z-dimension of the array */
++                 const int64_t * nx,                /* x-dimension of the array */
++                 const int64_t * ix,                /* starting x-index of the tile */
++                 const int64_t * ny,                /* y-dimension of the array */
++                 const int64_t * iy,                /* starting y-index of the tile */
++                 const int64_t * nz,                /* z-dimension of the array */
+                  const int * bdr,               /* tile border width */
+                  const int * isigned,           /* 0=unsigned data, 1=signed data */
+                  const int * endian,            /* 0=big endian, 1=little endian */
+                  const float * scalefactor,     /* value to divide array elements by before truncation to integers */
+                  const int * wordsize )         /* number of bytes to use for each array element */
+ {
+-  int i, narray;
++  int64_t i, narray;
+   int A2, B2;
+   int A3, B3, C3;
+   int A4, B4, C4, D4;
+diff -Naur convert_geotiff-0.1/write_geogrid.h convert_geotiff/write_geogrid.h
+--- convert_geotiff-0.1/write_geogrid.h	2013-10-09 13:03:55.000000000 +0000
++++ convert_geotiff/write_geogrid.h	2025-05-05 19:14:05.000000000 +0000
+@@ -2,21 +2,23 @@
+ #ifndef _WRITE_GEOGRID_H
+ #define _WRITE_GEOGRID_H
+ 
++#include <stdint.h>
++
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
+ int write_geogrid(
+-                 const float * rarray,          /* The array to be written */
+-                 const int * nx,                /* x-dimension of the array */
+-                 const int * ix,                /* starting x-index of the tile */
+-                 const int * ny,                /* y-dimension of the array */
+-                 const int * iy,                /* starting y-index of the tile */
+-                 const int * nz,                /* z-dimension of the array */
+-                 const int * bdr,               /* tile border width */
+-                 const int * isigned,           /* 0=unsigned data, 1=signed data */
+-                 const int * endian,            /* 0=big endian, 1=little endian */
+-                 const float * scalefactor,     /* value to divide array elements by before truncation to integers */
+-                 const int * wordsize );        /* number of bytes to use for each array element */
++                 const float * rarray,              /* The array to be written */
++                 const int64_t * nx,                /* x-dimension of the array */
++                 const int64_t * ix,                /* starting x-index of the tile */
++                 const int64_t * ny,                /* y-dimension of the array */
++                 const int64_t * iy,                /* starting y-index of the tile */
++                 const int64_t * nz,                /* z-dimension of the array */
++                 const int * bdr,                   /* tile border width */
++                 const int * isigned,               /* 0=unsigned data, 1=signed data */
++                 const int * endian,                /* 0=big endian, 1=little endian */
++                 const float * scalefactor,         /* value to divide array elements by before truncation to integers */
++                 const int * wordsize );            /* number of bytes to use for each array element */
+ #ifdef __cplusplus
+ }
+ #endif
