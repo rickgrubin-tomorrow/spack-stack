@@ -34,6 +34,9 @@ spack:
     - esmf@=8.6.1 snapshot=none
     - esmf@=8.8.0 snapshot=none
 
+    # Used for building documentation
+    - jedi-tools-dev
+
   specs:
   - matrix:
     - [$packages]
