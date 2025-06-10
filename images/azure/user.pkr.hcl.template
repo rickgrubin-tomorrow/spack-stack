@@ -1,0 +1,7 @@
+subscription_id = "32144b4b-8247-427b-b803-3b5b76ab6895"
+resource_group = "hpc-poc"
+gallery_name = "hpcpocgallery"
+
+client_id = "TODO"
+client_secret = "TODO"
+

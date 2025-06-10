@@ -1,0 +1,10 @@
+# Note: icc and icpc are last available in the 2023.2.0 release.
+# Note: ifort will be retired at the end of 2024.
+# JCSDA is working upstream to support newer Intel compilers.
+. /opt/intel/oneapi/setvars.sh --force
+. /opt/intel/oneapi/compiler/2023.2.0/env/vars.sh
+. /stacks/climacell/1.6.0/setup.sh
+spack env activate -p /stacks/climacell/1.6.0/envs/1.6.0
+export CC=icc
+export CXX=icpc
+export FC=ifort
