@@ -465,6 +465,10 @@ The following is required for building new spack environments with Intel on this
    module load PrgEnv-intel/8.5.0
    module load intel-classic/2023.2.0
    module load cray-mpich/8.1.30
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/release/1.9.0
 
 .. note::
    On Gaea, running ``module available`` without the option ``-t`` can lead to an error: ``/usr/bin/lua5.3: /opt/cray/pe/lmod/lmod/libexec/Spider.lua:568: stack overflow``

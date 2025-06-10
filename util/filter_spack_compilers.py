@@ -23,7 +23,11 @@ def parse_arguments():
     )
     parser.add_argument('yamlfile', help='Input YAML file (compilers.yaml or spack.yaml)')
     parser.add_argument('compilerspecs', nargs='+', help='Compiler specs to keep/remove')
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> upstream/release/1.9.0
     inc_or_exc_group = parser.add_mutually_exclusive_group(required=True)
     inc_or_exc_group.add_argument('--remove', action='store_true', 
                                   help='Remove specified compiler specs')
@@ -31,10 +35,17 @@ def parse_arguments():
                                   help='Remove all compiler specs except those specified')
     inc_or_exc_group.add_argument('--keep-only-this-version', action='store_true', 
                                   help='Remove all compiler specs of the same name(s) specified (i.e., have only one version of intel)')
+<<<<<<< HEAD
 
     parser.add_argument('--use-ruamel', action='store_true',
                        help='Use ruamel.yaml (preserves comments) instead of standard yaml module')
 
+=======
+    
+    parser.add_argument('--use-ruamel', action='store_true',
+                       help='Use ruamel.yaml (preserves comments) instead of standard yaml module')
+    
+>>>>>>> upstream/release/1.9.0
     return parser.parse_args()
 
 
@@ -45,7 +56,11 @@ def load_yaml_file(filename, use_ruamel=False):
             from ruamel.yaml import YAML
             yaml_parser = YAML(typ='rt')
             yaml_parser.default_flow_style = False
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> upstream/release/1.9.0
             with open(filename, 'r') as file:
                 raw_yaml_data = yaml_parser.load(file)
         except ImportError:
@@ -54,11 +69,19 @@ def load_yaml_file(filename, use_ruamel=False):
     else:
         # Use standard yaml module
         import yaml
+<<<<<<< HEAD
 
         with open(filename, 'r') as file:
             raw_yaml_data = yaml.safe_load(file)
         yaml_parser = yaml  # For consistency in return values
 
+=======
+        
+        with open(filename, 'r') as file:
+            raw_yaml_data = yaml.safe_load(file)
+        yaml_parser = yaml  # For consistency in return values
+    
+>>>>>>> upstream/release/1.9.0
     # Handle both spack.yaml and compilers.yaml formats
     if 'spack' in raw_yaml_data.keys():
         yaml_data = raw_yaml_data['spack']
@@ -66,7 +89,11 @@ def load_yaml_file(filename, use_ruamel=False):
     else:
         yaml_data = raw_yaml_data
         is_spack_yaml = False
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> upstream/release/1.9.0
     return yaml_parser, raw_yaml_data, yaml_data, is_spack_yaml
 
 
@@ -81,16 +108,24 @@ def filter_compilers(yaml_data, args):
     args.compilerspecs = [x.replace("@=", "@") for x in args.compilerspecs]
 
     n_compilers = len(yaml_data['compilers'])
+<<<<<<< HEAD
 
     for i in range(n_compilers-1, -1, -1):
         compiler_spec = yaml_data['compilers'][i]['compiler']['spec'].replace("@=", "@")
 
+=======
+    
+    for i in range(n_compilers-1, -1, -1):
+        compiler_spec = yaml_data['compilers'][i]['compiler']['spec'].replace("@=", "@")
+        
+>>>>>>> upstream/release/1.9.0
         if args.keep_only_this_version:
             names = [re.sub('@.*', '', x) for x in args.compilerspecs]
             compiler_name = re.sub('@.*', '', compiler_spec)
             if (compiler_name in names) and (compiler_spec not in args.compilerspecs):
                 del yaml_data['compilers'][i]
             continue
+<<<<<<< HEAD
 
         if (compiler_spec in args.compilerspecs) and args.remove:
             del yaml_data['compilers'][i]
@@ -99,6 +134,16 @@ def filter_compilers(yaml_data, args):
         if (compiler_spec not in args.compilerspecs) and args.keep_only:
             del yaml_data['compilers'][i]
 
+=======
+            
+        if (compiler_spec in args.compilerspecs) and args.remove:
+            del yaml_data['compilers'][i]
+            continue
+            
+        if (compiler_spec not in args.compilerspecs) and args.keep_only:
+            del yaml_data['compilers'][i]
+    
+>>>>>>> upstream/release/1.9.0
     return yaml_data
 
 
@@ -109,11 +154,19 @@ def save_yaml_file(yaml_parser, yaml_data, raw_yaml_data, yamlfile, is_spack_yam
         output_data = raw_yaml_data
     else:
         output_data = yaml_data
+<<<<<<< HEAD
 
     # Create backup of original file
     bkp_path = yamlfile + '.bkp'
     os.rename(yamlfile, bkp_path)
 
+=======
+    
+    # Create backup of original file
+    bkp_path = yamlfile + '.bkp'
+    os.rename(yamlfile, bkp_path)
+    
+>>>>>>> upstream/release/1.9.0
     # Write updated file
     with open(yamlfile, 'w') as outputfile:
         if use_ruamel:

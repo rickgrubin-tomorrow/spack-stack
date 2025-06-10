@@ -38,6 +38,10 @@ compilers:
     - PrgEnv-gnu/8.5.0
     - gcc-native/12.3
     - craype/2.7.30
+<<<<<<< HEAD
     - libfabric/1.20.1
+=======
+    - libfabric/1.20.1 
+>>>>>>> upstream/release/1.9.0
     environment: {}
     extra_rpaths: []

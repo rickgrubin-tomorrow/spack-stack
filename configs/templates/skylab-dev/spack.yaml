@@ -27,6 +27,10 @@ spack:
     - crtm@3.1.1-build1
 
     # Mapl with various esmf tags
+<<<<<<< HEAD
+=======
+    - mapl@2.53.0 ^esmf@8.6.1
+>>>>>>> upstream/release/1.9.0
     - mapl@2.53.4 ^esmf@8.8.0
 
     # Various esmf tags (list all to avoid duplicate packages)
