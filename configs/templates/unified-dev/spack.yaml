@@ -33,8 +33,7 @@ spack:
     - crtm@3.1.1-build1
 
     # Mapl with various esmf tags
-    - mapl@2.53.0 ^esmf@8.6.1
-    - mapl@2.53.0 ^esmf@8.8.0
+    - mapl@2.53.4 ^esmf@8.8.0
 
     # Various esmf tags (list all to avoid duplicate packages)
     - esmf@=8.6.1 snapshot=none
