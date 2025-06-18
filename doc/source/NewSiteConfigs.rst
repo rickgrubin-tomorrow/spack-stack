@@ -25,6 +25,8 @@ The instructions below are for GNU (`gcc`), since this is the easiest and best s
 +-------------------------------------------+----------------------------------------------------------------------+---------------------------+
 | LLVM clang (clang, clang++, w/ gfortran)  | 10.0.0 to 14.0.3                                                     | ``clang@``                |
 +-------------------------------------------+----------------------------------------------------------------------+---------------------------+
+| LLVM clang (clang, clang++, flang(-new))  | 20.1.x (experimental for NEPTUNE standalone environment only)        | ``clang@``                |
++-------------------------------------------+----------------------------------------------------------------------+---------------------------+
 | Nvidia HPC SDK (nvcc, nvc++, nvfortran)   | 12.6 (Nvidia HPC SDK 25.1) [#fn3]_                                   | ``nvhpc@``                |
 +-------------------------------------------+----------------------------------------------------------------------+---------------------------+
 
@@ -353,7 +355,7 @@ See the :ref:`documentation <Duplicate_Checker>` for usage information including
 .. code-block:: console
 
    spack concretize 2>&1 | tee log.concretize
-   ${SPACK_STACK_DIR}/util/show_duplicate_packages.py -d [-c] log.concretize
+   ${SPACK_STACK_DIR}/util/show_duplicate_packages.py
    spack install [--verbose] [--fail-fast] 2>&1 | tee log.install
 
 11. Create lmod module files
@@ -620,7 +622,7 @@ See the :ref:`documentation <Duplicate_Checker>` for usage information including
 .. code-block:: console
 
    spack concretize 2>&1 | tee log.concretize
-   ${SPACK_STACK_DIR}/util/show_duplicate_packages.py -d [-c] log.concretize
+   ${SPACK_STACK_DIR}/util/show_duplicate_packages.py
    spack install [--verbose] [--fail-fast] 2>&1 | tee log.install
 
 12. Create tcl module files (replace ``tcl`` with ``lmod`` if you have manually installed lmod)
@@ -808,7 +810,7 @@ concretizer log must be inspected to ensure that all packages being built are bu
 .. code-block:: console
 
    spack concretize 2>&1 | tee log.concretize
-   ${SPACK_STACK_DIR}/util/show_duplicate_packages.py -d [-c] log.concretize
+   ${SPACK_STACK_DIR}/util/show_duplicate_packages.py
    spack install [--verbose] [--fail-fast] 2>&1 | tee log.install
 
 13. Create tcl module files (replace ``tcl`` with ``lmod`` if you have manually installed lmod)

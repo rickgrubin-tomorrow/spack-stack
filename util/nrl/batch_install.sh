@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SPACK_STACK_DIR=$(dirname $(dirname ${SCRIPT_DIR}))
+
 set -e
 
 ##################################################################################################
@@ -9,39 +12,44 @@ set -e
 usage() {
   set +x
   echo
-  echo "Usage: $0 -b <BUILD_DIR> | -i <INSTALL_DIR> | -r <role> | -c <BUILDCACHE_DIR>"
+  echo "Usage: $0 -r <ROLE> -m <MODE> [-d <ENV_DIRS>] [-c <BUILDCACHE_DIR>]"
   echo
-  echo "  -b  Build environments in BUILD_DIR and update build caches"
-  echo "  -i  Install environments in INSTALL_DIR using build caches"
   echo "  -r  Set role, can be 'ops' or 'dev'"
-  echo "  -c  Provide location of build caches as BUILDCACHE_DIR"
-  echo "      Must be set if and only if role is 'ops'"
-  echo "  -u  Flag to update bootstrap and source caches"
-  echo "      Can be set if and only if role is 'dev' and"
-  echo "      '-b' is used (i.e. cannot be used with '-i')"
+  echo "  -m  Set mode, can be 'build' or 'install';"
+  echo "      build: build environments and update build caches;"
+  echo "      install: install environments using build caches"
+  echo "  -d  Build or install environments in ENV_DIRS;"
+  echo "      if not set, the default location is used"
+  echo "  -c  Provide location of build caches as BUILDCACHE_DIR;"
+  echo "      if not set, authoritative build caches are used"
+  echo "  -u  Flag to update bootstrap and source caches;"
+  echo "      requires role 'dev' and mode 'build'"
+  echo "  -e  Continue builds/install in existing environments;"
+  echo "      by default, exit with an error if already exist"
   echo "  -h  display this help"
   echo
 }
 
-while getopts b:c:i:r:hu flag
+while getopts r:m:d:c:uhe flag
 do
   case "${flag}" in
-    b)
-      SPACK_STACK_MODE="build"
-      SPACK_STACK_ENVIRONMENT_DIRS=${OPTARG}
-      ;;
-    c)
-      SPACK_STACK_BUILDCACHE_DIR=${OPTARG}
-      ;;
-    i)
-      SPACK_STACK_MODE="install"
-      SPACK_STACK_ENVIRONMENT_DIRS=${OPTARG}
-      ;;
     r)
       SPACK_STACK_ROLE=${OPTARG}
       ;;
+    m)
+      SPACK_STACK_MODE=${OPTARG}
+      ;;
+    d)
+      SPACK_STACK_ENVIRONMENT_DIRS=$(readlink -f ${OPTARG})
+      ;;
+    c)
+      SPACK_STACK_BUILDCACHE_DIR=$(readlink -f ${OPTARG})
+      ;;
     u)
       SPACK_STACK_UPDATE_DEV_CACHES="true"
+      ;;
+    e)
+      SPACK_STACK_IGNORE_ENV_EXIST="true"
       ;;
     *)
       usage
@@ -50,54 +58,43 @@ do
   esac
 done
 
-# Default for updating extra caches (bootstrap, source) is 'false'
-SPACK_STACK_UPDATE_DEV_CACHES=${SPACK_STACK_UPDATE_DEV_CACHES:-false}
-
-echo ""
 echo "INFO: $0 options:"
 echo "  SPACK_STACK_ROLE:                            ${SPACK_STACK_ROLE:-not set}"
 echo "  SPACK_STACK_MODE:                            ${SPACK_STACK_MODE:-not set}"
-echo "  SPACK_STACK_ENVIRONMENT_DIRS:                ${SPACK_STACK_ENVIRONMENT_DIRS:-not set}"
-echo "  SPACK_STACK_BUILDCACHE_DIR:                  ${SPACK_STACK_BUILDCACHE_DIR:-not set}"
+echo "  SPACK_STACK_ENVIRONMENT_DIRS:                ${SPACK_STACK_ENVIRONMENT_DIRS:-${SPACK_STACK_DIR}/envs}"
+echo "  SPACK_STACK_BUILDCACHE_DIR:                  ${SPACK_STACK_BUILDCACHE_DIR:-use default caches}"
 echo "  SPACK_STACK_UPDATE_DEV_CACHES:               ${SPACK_STACK_UPDATE_DEV_CACHES:-false}"
-echo ""
+echo "  SPACK_STACK_IGNORE_ENV_EXIST:                ${SPACK_STACK_IGNORE_ENV_EXIST:-false}"
 
-if [[ ${SPACK_STACK_ROLE} == "ops" ]]; then
-  if [[ -z ${SPACK_STACK_BUILDCACHE_DIR} ]]; then
-    echo "ERROR, SPACK_STACK_BUILDCACHE_DIR not defined. Provide -c BUILDCACHE_DIR as argument when role is 'ops'."
-    exit 1
-  fi
-  if [[ ${SPACK_STACK_UPDATE_DEV_CACHES} == "true" ]]; then
-    echo "ERROR, SPACK_STACK_UPDATE_DEV_CACHES must not be set if role is 'ops'."
-    exit 1
-  fi
-elif [[ ${SPACK_STACK_ROLE} == "dev" ]]; then
-  if [[ ! -z ${SPACK_STACK_BUILDCACHE_DIR} ]]; then
-    echo "ERROR, SPACK_STACK_BUILDCACHE_DIR must not be set if role is 'dev'."
-    exit 1
-  fi
-else
+if [[ -z ${SPACK_STACK_ROLE} ]]; then
+  echo "ERROR, SPACK_STACK_ROLE not defined. Provide -r ROLE as argument"
+  exit 1
+elif [[ ! ${SPACK_STACK_ROLE} == "dev" && ! ${SPACK_STACK_ROLE} == "ops" ]]; then
   echo "ERROR, invalid role '${SPACK_STACK_ROLE}'"
   exit 1
 fi
 
-if [[ ${SPACK_STACK_MODE} == "build" ]]; then
-  if [[ -z ${SPACK_STACK_ENVIRONMENT_DIRS} ]]; then
-    echo "ERROR, SPACK_STACK_ENVIRONMENT_DIRS not defined. Provide -b BUILD_DIR as argument."
-    exit 1
-  fi
-elif [[ ${SPACK_STACK_MODE} == "install" ]]; then
-  if [[ -z ${SPACK_STACK_ENVIRONMENT_DIRS} ]]; then
-    echo "ERROR, SPACK_STACK_ENVIRONMENT_DIRS not defined. Provide -i INSTALL_DIR as argument."
-    exit 1
-  fi
-  if [[ ${SPACK_STACK_UPDATE_DEV_CACHES} == "true" ]]; then
-    echo "ERROR, dev caches can only be updated with '-b', not with '-i'."
-    exit 1
-  fi
-else
+if [[ -z ${SPACK_STACK_MODE} ]]; then
+  echo "ERROR, SPACK_STACK_MODE not defined. Provide -m MODE as argument"
+  exit 1
+elif [[ ! ${SPACK_STACK_MODE} == "build" && ! ${SPACK_STACK_MODE} == "install" ]]; then
   echo "ERROR, invalid mode '${SPACK_STACK_MODE}'"
   exit 1
+fi
+
+# Role ops cannot write to the default (authoritative) build cache
+if [[ ${SPACK_STACK_ROLE} == "ops" && ${SPACK_STACK_MODE} == "build" && -z ${SPACK_STACK_BUILDCACHE_DIR} ]]; then
+  echo "ERROR, SPACK_STACK_BUILDCACHE_DIR not defined. Provide -c BUILDCACHE_DIR"
+  echo "as argument when role is 'ops' and mode is 'build'"
+  exit 1
+fi
+
+# Updating bootstrap and source caches requires role dev and mode build
+if [[ ${SPACK_STACK_UPDATE_DEV_CACHES} == "true" ]]; then
+  if [[ ! ${SPACK_STACK_ROLE} == "dev" || ! ${SPACK_STACK_MODE} == "build" ]]; then
+    echo "ERROR, SPACK_STACK_UPDATE_DEV_CACHES requires role 'dev' and mode 'build'"
+    exit 1
+  fi
 fi
 
 ##################################################################################################
@@ -108,56 +105,60 @@ SPACK_STACK_BATCH_HOST=${SPACK_STACK_BATCH_HOST//[0-9]/}
 
 case ${SPACK_STACK_BATCH_HOST} in
   atlantis)
-    # DH* GPFS ISSUE
-    #SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.1" "oneapi@=2025.0.3" "intel@=2021.6.0" "gcc@=11.2.0")
-    SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.1" "oneapi@=2025.0.4" "intel@=2021.6.0" "gcc@=11.2.0")
-    # *DH
+    SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.1" "oneapi@=2025.0.3" "gcc@=11.2.0" "clang@=20.1.5")
     SPACK_STACK_BATCH_TEMPLATES=("neptune-dev" "unified-dev" "cylc-dev")
     SPACK_STACK_MODULE_CHOICE="lmod"
     SPACK_STACK_BOOTSTRAP_MIRROR="/neptune_diagnostics/spack-stack/bootstrap-mirror"
+    SPACK_STACK_CARGO_MIRROR="/neptune_diagnostics/spack-stack/cargo-mirror"
     ;;
   blueback)
-    SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.1" "oneapi@2025.0.4" "gcc@=13.3.0")
+    SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.1" "oneapi@=2025.0.4" "gcc@=13.3.0")
     SPACK_STACK_BATCH_TEMPLATES=("neptune-dev" "unified-dev" "cylc-dev")
     SPACK_STACK_MODULE_CHOICE="tcl"
     SPACK_STACK_BOOTSTRAP_MIRROR="/p/cwfs/projects/NEPTUNE/spack-stack/bootstrap-mirror"
+    SPACK_STACK_CARGO_MIRROR="/p/cwfs/projects/NEPTUNE/spack-stack/cargo-mirror"
     ;;
   cole)
     SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.1" "gcc@=12.3.0")
     SPACK_STACK_BATCH_TEMPLATES=("neptune-dev")
     SPACK_STACK_MODULE_CHOICE="tcl"
     SPACK_STACK_BOOTSTRAP_MIRROR="/p/work1/heinzell/spack-stack/bootstrap-mirror"
+    SPACK_STACK_CARGO_MIRROR="/p/work1/heinzell/spack-stack/cargo-mirror"
     ;;
   narwhal)
-    SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.0" "intel@=2021.10.0" "gcc@=12.2.0")
+    SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.0" "gcc@=12.2.0")
     SPACK_STACK_BATCH_TEMPLATES=("neptune-dev" "unified-dev" "cylc-dev")
     SPACK_STACK_MODULE_CHOICE="tcl"
     SPACK_STACK_BOOTSTRAP_MIRROR="/p/cwfs/projects/NEPTUNE/spack-stack/bootstrap-mirror"
+    SPACK_STACK_CARGO_MIRROR="/p/cwfs/projects/NEPTUNE/spack-stack/cargo-mirror"
     ;;
   nautilus)
-    SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.1" "oneapi@=2025.0.0" "intel@=2021.5.0" "gcc@=11.2.1")
+    SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.1" "oneapi@=2025.1.1" "gcc@=11.2.1")
     SPACK_STACK_BATCH_TEMPLATES=("neptune-dev" "unified-dev" "cylc-dev")
     SPACK_STACK_MODULE_CHOICE="tcl"
     SPACK_STACK_BOOTSTRAP_MIRROR="/p/cwfs/projects/NEPTUNE/spack-stack/bootstrap-mirror"
+    SPACK_STACK_CARGO_MIRROR="/p/cwfs/projects/NEPTUNE/spack-stack/cargo-mirror"
     ;;
   tusk)
     SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.0" "gcc@=12.1.0")
     SPACK_STACK_BATCH_TEMPLATES=("neptune-dev")
     SPACK_STACK_MODULE_CHOICE="tcl"
     SPACK_STACK_BOOTSTRAP_MIRROR="/p/work1/heinzell/spack-stack/bootstrap-mirror"
+    SPACK_STACK_CARGO_MIRROR="/p/work1/heinzell/spack-stack/cargo-mirror"
     ;;
   blackpearl)
-    # DH* TODO UPDATE oneifx@=2024.1.2 to oneifx@=2025.x.y
-    SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.1" "oneapi@=2024.1.2" "gcc@=13.3.0" "aocc@=4.2.0")
+    SPACK_STACK_BATCH_COMPILERS=("oneapi@=2024.2.1" "oneapi@=2025.1.0" "gcc@=13.3.0")
     SPACK_STACK_BATCH_TEMPLATES=("neptune-dev" "unified-dev" "cylc-dev")
     SPACK_STACK_MODULE_CHOICE="tcl"
     SPACK_STACK_BOOTSTRAP_MIRROR="/home/dom/prod/spack-bootstrap-mirror"
+    SPACK_STACK_CARGO_MIRROR="/home/dom/prod/spack-cargo-mirror"
     ;;
   bounty)
-    SPACK_STACK_BATCH_COMPILERS=("oneapi@=2025.0.0" "gcc@=13.3.1" "aocc@=5.0.0" "clang@=19.1.4")
+    SPACK_STACK_BATCH_COMPILERS=("oneapi@=2025.1.1" "gcc@=13.3.1" "clang@=20.1.5")
     SPACK_STACK_BATCH_TEMPLATES=("neptune-dev" "unified-dev" "cylc-dev")
     SPACK_STACK_MODULE_CHOICE="tcl"
     SPACK_STACK_BOOTSTRAP_MIRROR="/home/dom/prod/spack-bootstrap-mirror"
+    SPACK_STACK_CARGO_MIRROR="/home/dom/prod/spack-cargo-mirror"
     ;;
   *)
     echo "ERROR, host ${SPACK_STACK_BATCH_HOST} not configured"
@@ -257,6 +258,8 @@ fi
 host=${SPACK_STACK_BATCH_HOST}
 module_choice=${SPACK_STACK_MODULE_CHOICE}
 bootstrap_mirror_path=${SPACK_STACK_BOOTSTRAP_MIRROR}
+cargo_mirror_path=${SPACK_STACK_CARGO_MIRROR}
+export CARGO_HOME=${cargo_mirror_path}
 
 if [[ -z ${SPACK_STACK_ENVIRONMENT_DIRS} ]]; then
   environment_dirs=${PWD}/envs
@@ -267,24 +270,34 @@ mkdir -p ${environment_dirs}
 
 if [[ ! -z ${SPACK_STACK_BUILDCACHE_DIR} ]]; then
   buildcache_dir=${SPACK_STACK_BUILDCACHE_DIR}
-  mkdir -p ${buildcache_dir}
+  if [[ "${SPACK_STACK_MODE}" == "install" && ! -d ${buildcache_dir} ]]; then
+    echo "ERROR, build cache ${buildcache_dir} not found,"
+    echo "must exist before installing environments"
+    exit 1
+  else
+    mkdir -p ${buildcache_dir}
+  fi
 fi
 
 if [[ "${SPACK_STACK_MODE}" == "install" ]]; then
   update_bootstrap_mirror="false"
+  update_cargo_mirror="false"
   update_source_cache="false"
   update_build_cache="false"
   reuse_build_cache="true"
 elif [[ "${SPACK_STACK_MODE}" == "build" ]]; then
   if [[ "${SPACK_STACK_ROLE}" == "ops" ]]; then
     update_bootstrap_mirror="false"
+    update_cargo_mirror="false"
     update_source_cache="false"
   elif [[ "${SPACK_STACK_ROLE}" == "dev" ]]; then
     if [[ ${SPACK_STACK_UPDATE_DEV_CACHES} == "true" ]]; then
       update_bootstrap_mirror="true"
+      update_cargo_mirror="true"
       update_source_cache="true"
     else
       update_bootstrap_mirror="false"
+      update_cargo_mirror="false"
       update_source_cache="false"
     fi
   else
@@ -298,34 +311,7 @@ else
   exit 1
 fi
 
-# For Cray systems, capture the default=current environment (loaded modules)
-# so that it can be restored between building stacks for different compilers
-case ${host} in
-  atlantis)
-    ;;
-  blueback)
-    module_snapshot=${PWD}/spack-stack.default-modules
-    module snapshot -f ${module_snapshot}
-    ;;
-  cole)
-    module_snapshot=${PWD}/spack-stack.default-modules
-    module snapshot -f ${module_snapshot}
-    ;;
-  narwhal)
-    module_snapshot=${PWD}/spack-stack.default-modules
-    module snapshot -f ${module_snapshot}
-    ;;
-  nautilus)
-    ;;
-  tusk)
-    module_snapshot=${PWD}/spack-stack.default-modules
-    module snapshot -f ${module_snapshot}
-    ;;
-  blackpearl)
-    ;;
-  bounty)
-    ;;
-esac
+ignore_env_exist=${SPACK_STACK_IGNORE_ENV_EXIST:-false}
 
 # Loop through all compilers and templates for this host
 for compiler in "${SPACK_STACK_BATCH_COMPILERS[@]}"; do
@@ -348,16 +334,12 @@ for compiler in "${SPACK_STACK_BATCH_COMPILERS[@]}"; do
     if [[ "${template}" == "cylc-dev" && ! "${compiler_name}" == "gcc" ]]; then
       echo "Skipping template ${template} with compiler ${compiler}"
       continue
-    # unified-env not with intel
-    elif [[ "${template}" == "unified-dev" &&  "${compiler_name}" == "intel" ]]; then
-      echo "Skipping template ${template} with compiler ${compiler}"
-      continue
     # With clang, only neptune-dev
     elif [[ "${compiler_name}" == "clang" && ! "${template}" == "neptune-dev" ]]; then
       echo "Skipping template ${template} with compiler ${compiler}"
       continue
-    # With aocc, only neptune-dev
-    elif [[ "${compiler_name}" == "aocc" && ! "${template}" == "neptune-dev" ]]; then
+    # FMS compiler ICE: https://github.com/NOAA-GFDL/FMS/issues/1680
+    elif [[ "${compiler_name}" == "oneapi" && "${compiler_version}" == "2025.1"* && "${template}" == "unified-dev" ]]; then
       echo "Skipping template ${template} with compiler ${compiler}"
       continue
     fi
@@ -386,8 +368,14 @@ for compiler in "${SPACK_STACK_BATCH_COMPILERS[@]}"; do
 
     # Bail out if the environment already exists
     if [[ -d ${env_dir} ]]; then
-      echo "ERROR, environment ${env_dir} already exists"
-      exit 1
+      if [[ ${ignore_env_exist} == "true" ]]; then
+        env_exists="true"
+      else
+        echo "ERROR, environment ${env_dir} already exists"
+        exit 1
+      fi
+    else
+      env_exists="false"
     fi
 
     # Reset environment
@@ -397,227 +385,38 @@ for compiler in "${SPACK_STACK_BATCH_COMPILERS[@]}"; do
         umask 0022
         module purge
         case ${compiler} in
-          oneapi@=2025.0.3)
-            echo "ERROR, MODULE USE STATEMENT MISSING"
-            exit 1
-            ;;
-          oneapi@=2025.0.4)
-            module use /neptune_diagnostics/spack-stack/oneapi-2025.0.1/modulefiles
+          clang@=20.1.5)
+            module use /gpfs/neptune/spack-stack/llvm-20.1.5/modulefiles
+            module use /gpfs/neptune/spack-stack/openmpi-5.0.6/llvm-20.1.5/modulefiles
             ;;
         esac
         ;;
       blueback)
-        # Check if snapshot to restore default environment exists, then restore
-        if [[ ! -e ${module_snapshot} ]]; then
-          echo "ERROR, ${module_snapshot} not found for resetting environment"
-          exit 1
-        fi
-        # Unloading modules on Blueback always throws an error:
-        # environment: line 0: unalias: mpirun: not found
-        set +e
-        echo "Please ignore warning 'environment: line 0: unalias: mpirun: not found' ..."
-        module purge
-        module restore -f ${module_snapshot}
-        set -e
         umask 0022
         set +e
-        case ${compiler} in
-          oneapi@=2024.2.1)
-            module purge
-            module load PrgEnv-intel/8.5.0
-            module unload intel
-            module load intel-oneapi/2024.2
-            module unload cray-mpich
-            module unload craype-network-ofi
-            module load libfabric/1.20.1
-            module unload cray-libsci
-            module load cray-libsci/24.07.0
-            ;;
-          oneapi@=2025.0.4)
-            module purge
-            module load PrgEnv-intel/8.5.0
-            module unload intel
-            module load intel-oneapi/2025.0
-            module unload cray-mpich
-            module unload craype-network-ofi
-            module load libfabric/1.20.1
-            module unload cray-libsci
-            module load cray-libsci/24.07.0
-            ;;
-          gcc@=13.3.0)
-            module purge
-            module load PrgEnv-gnu/8.5.0
-            module unload gcc
-            # Confusing: the module is called gcc-native/13.2,
-            # but the actual version of the compiler is 13.3
-            module load gcc-native/13.2
-            module unload cray-mpich
-            module unload craype-network-ofi
-            module load libfabric/1.20.1
-            module unload cray-libsci
-            module load cray-libsci/24.07.0
-            ;;
-          *)
-            echo "ERROR, compiler ${compiler} not configured for resetting environment"
-            exit 1
-            ;;
-        esac
+        module purge
         set -e
         ;;
       cole)
-        # Check if snapshot to restore default environment exists, then restore
-        if [[ ! -e ${module_snapshot} ]]; then
-          echo "ERROR, ${module_snapshot} not found for resetting environment"
-          exit 1
-        fi
-        # Unloading modules on Cole always throws an error:
-        # environment: line 0: unalias: mpirun: not found
-        set +e
-        echo "Please ignore warning 'environment: line 0: unalias: mpirun: not found' ..."
-        module purge
-        module restore -f ${module_snapshot}
-        set -e
         umask 0022
         set +e
-        case ${compiler} in
-          oneapi@=2024.2.1)
-            module purge
-            module use /p/work1/heinzell/spack-stack/oneapi-2024.2.1/modulefiles
-            module load PrgEnv-intel/8.5.0
-            module unload intel
-            module load intel/2024.2.1
-            module unload cray-mpich
-            module unload craype-network-ofi
-            module load libfabric/1.20.1
-            module unload cray-libsci
-            module load cray-libsci/24.03.0
-            ;;
-          gcc@=12.3.0)
-            module purge
-            module load PrgEnv-gnu/8.5.0
-            module unload gcc
-            module load gcc-native/12.3
-            module unload cray-mpich
-            module unload craype-network-ofi
-            module load libfabric/1.20.1
-            module unload cray-libsci
-            module load cray-libsci/24.03.0
-            ;;
-          *)
-            echo "ERROR, compiler ${compiler} not configured for resetting environment"
-            exit 1
-            ;;
-        esac
+        module purge
         set -e
         ;;
       narwhal)
-        # Check if snapshot to restore default environment exists, then restore
-        if [[ ! -e ${module_snapshot} ]]; then
-          echo "ERROR, ${module_snapshot} not found for resetting environment"
-          exit 1
-        fi
-        # Unloading modules on Narwhal always throws an error:
-        # environment: line 0: unalias: mpirun: not found
-        set +e
-        echo "Please ignore warning 'environment: line 0: unalias: mpirun: not found' ..."
-        module purge
-        module restore -f ${module_snapshot}
-        set -e
         umask 0022
         set +e
-        case ${compiler} in
-          oneapi@=2024.2.0)
-            module purge
-            module load PrgEnv-intel/8.4.0
-            module unload intel
-            module load intel/2024.2
-            module unload cray-mpich
-            module unload craype-network-ofi
-            module load libfabric/1.12.1.2.2.1
-            module unload cray-libsci
-            module load cray-libsci/23.05.1.4
-            ;;
-          intel@=2021.10.0)
-            module purge
-            module load PrgEnv-intel/8.4.0
-            module unload intel
-            module load intel-classic/2023.2.0
-            module unload cray-mpich
-            module unload craype-network-ofi
-            module load libfabric/1.12.1.2.2.1
-            module unload cray-libsci
-            module load cray-libsci/23.05.1.4
-            ;;
-          gcc@=12.2.0)
-            module purge
-            module load PrgEnv-gnu/8.4.0
-            module unload gcc
-            module load gcc/12.2.0
-            module unload cray-mpich
-            module unload craype-network-ofi
-            module load libfabric/1.12.1.2.2.1
-            module unload cray-libsci
-            module load cray-libsci/23.05.1.4
-            ;;
-          *)
-            echo "ERROR, compiler ${compiler} not configured for resetting environment"
-            exit 1
-            ;;
-        esac
+        module purge
         set -e
         ;;
       nautilus)
         umask 0022
         module purge
-        case ${compiler} in
-          oneapi@=2025.0.0)
-            echo "ERROR, MODULE USE STATEMENT IS MISSING"
-            exit 1
-        esac
         ;;
       tusk)
-        # Check if snapshot to restore default environment exists, then restore
-        if [[ ! -e ${module_snapshot} ]]; then
-          echo "ERROR, ${module_snapshot} not found for resetting environment"
-          exit 1
-        fi
-        # Unloading modules on Tusk always throws an error:
-        # environment: line 0: unalias: mpirun: not found
-        set +e
-        echo "Please ignore warning 'environment: line 0: unalias: mpirun: not found' ..."
-        module purge
-        module restore -f ${module_snapshot}
-        set -e
         umask 0022
         set +e
-        case ${compiler} in
-          oneapi@=2024.2.0)
-            module purge
-            module load PrgEnv-intel/8.4.0
-            module unload intel
-            module load intel/2024.2
-            module unload cray-mpich
-            module unload craype-network-ofi
-            module load libfabric/1.12.1.2.2.1
-            module unload cray-libsci
-            module load cray-libsci/23.05.1.4
-            ;;
-          gcc@=12.1.0)
-            module purge
-            module load PrgEnv-gnu/8.4.0
-            module unload gcc
-            module load gcc/12.1.0
-            module unload cray-mpich
-            module unload craype-network-ofi
-            module load libfabric/1.12.1.2.2.1
-            module unload cray-libsci
-            module load cray-libsci/23.05.1.4
-            ;;
-          *)
-            echo "ERROR, compiler ${compiler} not configured for resetting environment"
-            exit 1
-            ;;
-        esac
+        module purge
         set -e
         ;;
       blackpearl)
@@ -639,12 +438,14 @@ for compiler in "${SPACK_STACK_BATCH_COMPILERS[@]}"; do
     source setup.sh
     spack clean -a
 
-    spack stack create env --name=${env_name} \
-                           --site=${host} \
-                           --compiler=${compiler_name}@=${compiler_version} \
-                           --template=${template} \
-                           --dir=${environment_dirs} \
-                           2>&1 | tee log.create.${env_name}.001
+    if [[ ! ${env_exists} == "true" ]]; then
+      spack stack create env --name=${env_name} \
+                             --site=${host} \
+                             --compiler=${compiler_name}@=${compiler_version} \
+                             --template=${template} \
+                             --dir=${environment_dirs} \
+                             2>&1 | tee log.create.${env_name}.001
+    fi
     spack env activate -p ${env_dir}
 
     # Workaround for building cylc environment on Narwhal: We need to use GNU
@@ -668,7 +469,7 @@ for compiler in "${SPACK_STACK_BATCH_COMPILERS[@]}"; do
         exit 1
       fi
       spack bootstrap mirror --binary-packages ${tmp_bootstrap_mirror_path} 2>&1 | tee log.bootstrap-mirror.${env_name}.001
-      rsync -av ${tmp_bootstrap_mirror_path}/ ${bootstrap_mirror_path}/
+      rsync -a ${tmp_bootstrap_mirror_path}/ ${bootstrap_mirror_path}/
       rm -fr ${tmp_bootstrap_mirror_path}
       # Update buildcache index
       spack buildcache update-index ${bootstrap_mirror_path}/bootstrap_cache
@@ -679,8 +480,8 @@ for compiler in "${SPACK_STACK_BATCH_COMPILERS[@]}"; do
       echo "ERROR, directory ${bootstrap_mirror_path} not found"
       exit 1
     fi
-    spack bootstrap add --trust local-sources ${bootstrap_mirror_path}/metadata/sources
-    spack bootstrap add --trust local-binaries ${bootstrap_mirror_path}/metadata/binaries
+    spack bootstrap add --trust local-sources ${bootstrap_mirror_path}/metadata/sources || true
+    spack bootstrap add --trust local-binaries ${bootstrap_mirror_path}/metadata/binaries || true
 
     # Check that the site has mirrors configured for local source and build caches,
     # and extract the local path on disk. Need to strip leading "file://" from path
@@ -720,12 +521,18 @@ for compiler in "${SPACK_STACK_BATCH_COMPILERS[@]}"; do
     fi
 
     # Check for duplicate packages
-    ./util/show_duplicate_packages.py -i crtm -i crtm-fix -i esmf -i mapl -d log.concretize.${env_name}.001
+    ./util/show_duplicate_packages.py -i crtm -i crtm-fix -i esmf -i mapl
 
     # Update local source cache if requested
     if [[ "${update_source_cache}" == "true"* ]]; then
       echo "Updating local source cache ..."
       spack mirror create -a -d ${source_mirror_path}
+    fi
+
+    # Update local cargo mirror if requested
+    if [[ "${update_cargo_mirror}" == "true"* ]]; then
+      echo "Updating local cargo mirror ..."
+      ./util/fetch_cargo_deps.py
     fi
 
     # Install the environment with the correct flags
@@ -795,6 +602,9 @@ for compiler in "${SPACK_STACK_BATCH_COMPILERS[@]}"; do
     if [[ "${update_build_cache}" == "true" ]]; then
       fix_permissions ${host} ${binary_mirror_path} 0
     fi
+    if [[ "${update_cargo_mirror}" == "true" ]]; then
+      fix_permissions ${host} ${cargo_mirror_path} 0
+    fi
 
     # Clean up
     spack clean -a
@@ -804,34 +614,10 @@ for compiler in "${SPACK_STACK_BATCH_COMPILERS[@]}"; do
 
 done
 
-# Remove module snapshots for Cray systems
-case ${host} in
-  atlantis)
-    ;;
-  blueback)
-    rm -vf ${module_snapshot}
-    ;;
-  cole)
-    rm -vf ${module_snapshot}
-    ;;
-  narwhal)
-    rm -vf ${module_snapshot}
-    ;;
-  nautilus)
-    ;;
-  tusk)
-    rm -vf ${module_snapshot}
-    ;;
-  blackpearl)
-    ;;
-  bounty)
-    ;;
-esac
-
 # Repair permissions for environments if in installer mode
 if [[ "${update_build_cache}" == "false" ]]; then
   # Also search for exectuables
-  fix_permissions ${host} ${PWD} 1
+  fix_permissions ${host} ${environment_dirs} 1
 fi
 
 echo "SUCCESS"

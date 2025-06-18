@@ -4,6 +4,9 @@ packages:
       blas: [intel-oneapi-mkl]
       fftw-api: [intel-oneapi-mkl]
       lapack: [intel-oneapi-mkl]
+  cmake:
+    require:
+    - '%gcc'
   ectrans:
     require:
     - '+mkl ~fftw'
@@ -21,6 +24,15 @@ packages:
     require: '%gcc'
   libbsd:
     require: '%gcc'
+  met:
+    require:
+    - '+shared-intel'
+  parallel-netcdf:
+    require:
+    - '+shared-intel'
   qt:
+    require:
+    - '%gcc'
+  scotch:
     require:
     - '%gcc'
