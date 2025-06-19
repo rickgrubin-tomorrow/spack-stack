@@ -1,0 +1,9 @@
+modules:
+  default:
+    enable::
+    - tcl
+    tcl:
+      include:
+      - mpich
+      - openmpi
+      - python

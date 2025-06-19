@@ -1,9 +1,8 @@
 packages:
   all:
-    compiler:: [oneapi@2024.2.1,gcc@11.4.1]
+    compiler: [oneapi@2024.2.1, gcc@12.3.0]
     providers:
-      mpi:: [intel-oneapi-mpi@2021.13]
-      # Change as appropriate to switch to intel-oneapi-mkl
+      mpi: [intel-oneapi-mpi@2021.13]
       blas:: [openblas]
       fftw-api:: [fftw]
       lapack:: [openblas]
@@ -11,7 +10,7 @@ packages:
     buildable: False
   intel-oneapi-mpi:
     buildable: False
-    externals:
+     externals:
     - spec: intel-oneapi-mpi@2021.13%oneapi@2024.2.1
       modules:
       - intel-oneapi-mpi/2021.13.1
@@ -31,4 +30,4 @@ packages:
   gcc-runtime:
     externals:
     - spec: gcc-runtime@11.4.1%gcc@11.4.1
-      prefix: /usr
+      prefix: /usr 
