@@ -1,0 +1,32 @@
+packages:
+  all:
+    compiler: [gcc@12.3.0]
+    providers:
+      mpi:: [openmpi@5.0.7]
+      blas:: [openblas]
+      fftw-api:: [fftw]
+      lapack:: [openblas]
+      zlib-api:: [zlib]
+  mpi:
+    buildable: False
+  openmpi:
+    buildable: False
+    externals:
+    - spec: openmpi@5.0.7%gcc@12.3.0
+      modules:
+      - openmpi/5.0.7
+      prefix: /usr/share/modules/modulefiles/mpi
+
+  ectrans:
+    require::
+    - '@1.2.0 ~mkl +fftw'
+  gsibec:
+    require::
+    - '@1.2.1 ~mkl'
+  py-numpy:
+    require::
+    - '@1.26'
+    - '^openblas'
+  zlib-ng:
+    require:
+      - '~shared'
