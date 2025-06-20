@@ -202,5 +202,5 @@ packages:
     buildable: False
   zip:
     externals:
-    - spec: zip#3.0
+    - spec: zip@3.0
       prefix: /usr
