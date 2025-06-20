@@ -32,5 +32,4 @@ compilers:
     target: x86_64
     environment: {}
     extra_rpaths: []
-    extra_rpaths: []
 
