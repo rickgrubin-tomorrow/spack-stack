@@ -12,12 +12,12 @@ compilers:
     modules:
     - tbb/2021.13
     - compiler-rt/2024.2.1
-    - compilers/2024.2.1
+    - compiler/2024.2.1
     environment:
       prepend_path:
         PATH: '/usr/bin'
-        LD_LIBRARY_PATH: '/usr/lib:/usr/lib64'
-        CPATH: '/usr/include/c++/12'
+        LD_LIBRARY_PATH: '/usr/lib:/usr/lib64:/usr/lib/x86_64-linux-gnu'
+        CPATH: '/usr/include/x86_64-linux-gnu/c++/12'
     extra_rpaths: []
 
 - compiler:

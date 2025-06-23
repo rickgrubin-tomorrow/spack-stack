@@ -162,11 +162,6 @@ packages:
     buildable: False
   pkg-config:
     buildable: False
-  python:
-    externals:
-    - spec: python@3.10.12
-      prefix: /usr
-    buildable: False
   rsync:
     externals:
     - spec: rsync@3.2.7

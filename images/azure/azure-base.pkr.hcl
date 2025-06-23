@@ -148,9 +148,10 @@ build {
 
       "sudo apt update -y",
       "sudo apt upgrade -y",
-      "sudo apt install -y autoconf automake build-essential ca-certificates cmake cmake-curses-gui curl diffutils",
-      "sudo apt install -y gcc-12 g++-12 gfortran-12 git git-lfs libdb5.3 libdb5.3-dev libtool-bin libcurl4-openssl-dev lmod locales ",
-      "sudo apt install -y ninja-build patch perl pipx pkgconf subversion tcl tzdata vim-nox",
+      "sudo apt install -y autoconf automake build-essential ca-certificates cmake cmake-curses-gui curl"
+      "sudo apt install -y diffutils environment-modulesi gcc-12 g++-12 gfortran-12 git git-lfs",
+      "sudo apt install -y libdb5.3 libdb5.3-dev libtool-bin libcurl4-openssl-dev libkrb5-dev lmod locales",
+      "sudo apt install -y ninja-build patch perl pipx pkgconf subversion tcl tcl-dev tcl-expect tzdata vim-nox",
 
       "sudo apt install -y intel-basekit-2024.2 intel-basekit-runtime-2024.2 intel-basekit-env-2024.2 intel-hpckit-2024.2 intel-hpckit-runtime-2024.2 intel-hpckit-env-2024.2",
       "sudo /opt/intel/oneapi/modulefiles-setup.sh --output-dir=/opt/modulefiles/oneapi --ignore-latest",
