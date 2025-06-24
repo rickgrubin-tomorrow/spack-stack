@@ -155,6 +155,8 @@ build {
 
       "sudo apt install -y intel-basekit-2024.2 intel-basekit-runtime-2024.2 intel-basekit-env-2024.2 intel-hpckit-2024.2 intel-hpckit-runtime-2024.2 intel-hpckit-env-2024.2",
       "sudo /opt/intel/oneapi/modulefiles-setup.sh --output-dir=/opt/modulefiles/oneapi --ignore-latest",
+
+      "sudo echo \"/opt/modulefiles/oneapi\" | tee -a /etc/environment-modules/modulespath",
     ]
     inline_shebang = "/bin/sh -x"
   }
