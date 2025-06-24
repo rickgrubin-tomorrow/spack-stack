@@ -138,7 +138,7 @@ build {
       "sudo apt update -y",
       "sudo apt install -y software-properties-common",
       "sudo apt upgrade -y",
-      "sudo apt install -y cmake gnupg pkg-config build-essential",
+      "sudo apt install -y gnupg pkg-config build-essential",
 
       "sudo wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB -P /etc/apt/trusted.gpg.d/",
       "sudo apt-key add /etc/apt/trusted.gpg.d/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB",
