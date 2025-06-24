@@ -24,4 +24,4 @@ class PySkyfield(PythonPackage):
     depends_on("py-certifi", type="run")
     depends_on("py-jplephem", type="run")
     depends_on("py-numpy", type="run")
-    depends_on("py-spg4", type="run")
+    depends_on("py-sgp4", type="run")
