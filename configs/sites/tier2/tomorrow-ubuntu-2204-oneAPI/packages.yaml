@@ -20,7 +20,8 @@ packages:
   zlib:
     buildable: False
     externals:
-    - spec: zlib@1.4.8
+    #- spec: zlib@1.4.8
+    - spec: zlib@1.2.11
       prefix: /usr
 
   # Installed by apt as when following the Ubuntu NVHPC instructions
@@ -106,11 +107,10 @@ packages:
     - spec: git-lfs@3.0.2
       prefix: /usr
     buildable: False
-  # TODO: spack-stack won't accept the system version, must build own
-  #gmake:
-  #  externals:
-  #  - spec: gmake@4.3
-  #    prefix: /usr
+  gmake:
+    externals:
+    - spec: gmake@4.3
+      prefix: /usr
   #  buildable: False
   grep:
     externals:
@@ -122,9 +122,14 @@ packages:
     - spec: groff@1.22.4
       prefix: /usr
     buildable: False
+  krb5:
+    externals:
+    - spec: krb5@1.19.2
+      prefix: /usr
   libfuse:
     externals:
-    - spec: libfuse@2.9.9
+    #- spec: libfuse@2.9.9
+    - spec: libfuse@3.10.5
       prefix: /usr
   liblzma:
     externals:
@@ -145,11 +150,11 @@ packages:
     - spec: ninja@1.10.2
       prefix: /usr
     buildable: False
-  openmpi:
-    externals:
-    - spec: openmpi@5.0.7
-      prefix: /opt/openmpi-5.0.7/lib
-    buildable: False
+  #openmpi:
+  #  externals:
+  #  - spec: openmpi@5.0.7
+  #    prefix: /opt/openmpi-5.0.7/lib
+  #  buildable: False
   perl:
     externals:
     - spec: perl@5.34.0
@@ -162,10 +167,19 @@ packages:
     buildable: False
   pkg-config:
     buildable: False
+  openssl:
+    externals:
+    - spec: openssl@3.0.2
+      prefix: /usr
   rsync:
     externals:
     - spec: rsync@3.2.7
       prefix: /usr
+  ruby:
+    externals:
+    - spec: ruby@3.0.2
+      prefix: /usr
+    buildable: False  
   sed:
     externals:
     - spec: sed@4.8
