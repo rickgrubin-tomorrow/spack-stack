@@ -27,27 +27,6 @@ variable "client_secret" {
   type = string
 }
 
-#source "azure-arm" "ubuntu-2004-hb120rsv3" {
-#  client_id = "${var.client_id}"
-#  client_secret = "${var.client_secret}"
-#  tenant_id = "ead7805b-3ab5-4c45-bc8b-b2c957dff611"
-#  subscription_id = "${var.subscription_id}"
-#  managed_image_name = "Azure-Base-u2004-hb120rsv3-{{timestamp}}"
-#  managed_image_resource_group_name = "${var.resource_group}"
-
-#  os_type = "Linux"
-#  # Let's build an Ubuntu image.
-#  #microsoft-dsvm:ubuntu-hpc:2004:20.04.2023080201
-#  image_publisher = "microsoft-dsvm"
-#  image_offer = "ubuntu-hpc"
-#  image_sku = "2004"
-
-#  location = "East US"
-#  vm_size = "Standard_HB120rs_v3"
-#  # We need enough space to upgrade, to install the Intel compilers, and to build the Spack packages.
-#  os_disk_size_gb = 100
-#}
-
 source "azure-arm" "ubuntu-2204-Standard_D4ds_v5" {
   client_id = "${var.client_id}"
   client_secret = "${var.client_secret}"
@@ -62,13 +41,6 @@ source "azure-arm" "ubuntu-2204-Standard_D4ds_v5" {
   image_publisher = "microsoft-dsvm"
   image_offer = "ubuntu-hpc"
   image_sku = "2204"
-
-  # AlmaLinux's provider charges for use of the images. Upstream JCSDA develops on Ubuntu,
-  # so we're fine with that for the dev cluster.
-  #almalinux:almalinux-hpc:8_5-hpc-gen2:latest
-  #image_publisher = "almalinux"
-  #image_offer = "almalinux-hpc"
-  #image_sku = "8_5-hpc-gen2"
 
   location = "East US"
   vm_size = "Standard_HB120rs_v3"
@@ -89,8 +61,6 @@ build {
   name = "base-ubuntu"
   sources = [
     "source.azure-arm.ubuntu-2204-Standard_D4ds_v5",
-    #"source.azure-arm.ubuntu-2004-hb120rsv3",
-    #"source.azure-arm.ubuntu-2204-hb120rsv3"
   ]
 
   # Profile customizations
@@ -108,26 +78,6 @@ build {
     inline_shebang = "/bin/sh -x"
   }
 
-#  # Ubuntu 20.04 base packages
-#  provisioner "shell" {
-#    only = ["azure-arm.ubuntu-2004-hb120rsv3"]
-#    inline         = [
-#      "umask 022",
-#      "export DEBIAN_FRONTEND=noninteractive",
-#      "echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections",
-#      "wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null",
-#      "echo \"deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main\" | sudo tee /etc/apt/sources.list.d/oneAPI.list",
-#      "sudo apt-get update",
-#      "sudo apt-get upgrade -y",
-#      "sudo apt-get install -y autoconf automake build-essential ca-certificates cmake cmake-curses-gui curl diffutils gcc-10 gfortran-10 g++-10 git git-lfs gnupg libcurl4-openssl-dev locales ninja-build patch perl pipx pkg-config subversion tzdata vim-nox",
-#      "sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 50",
-#      "sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 50",
-#      "sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-10 50",
-#      "sudo apt-get install -y intel-basekit-2023.2.0 intel-hpckit-2023.2.0 intel-basekit-2024.0 intel-hpckit-2024.0"
-#    ]
-#    inline_shebang = "/bin/sh -x"
-#  }
-
   # Ubuntu 22.04 base packages
   provisioner "shell" {
     only = ["azure-arm.ubuntu-2204-Standard_D4ds_v5"]
@@ -140,23 +90,30 @@ build {
       "sudo apt upgrade -y",
       "sudo apt install -y gnupg pkg-config build-essential",
 
+      "sudo apt install -y autoconf automake autopoint build-essential ca-certificates cmake cmake-curses-gui curl"
+      "sudo apt install -y diffutils environment-modules gcc-12 g++-12 gfortran-12 git git-lfs",
+      "sudo apt install -y libdb5.3 libdb5.3-dev libtool-bin libcurl4-openssl-dev libkrb5-dev locales",
+      "sudo apt install -y ninja-build patch perl pipx pkgconf sphinx subversion tcl tcl-dev tcl-expect tzdata vim-nox",
+
+      "sudo apt autoremove -y",
+      "sudo apt remove -y lmod",
+      "sudo rm -f /etc/profile.d/lmod.sh",
+      "sudo apt install -y environment-modules",
+
+      "sudo sed -i 's/^[^#]/#&/' /etc/environment-modules/modulespath",
+      "sudo sed -i '/module use/s/^/#/' /etc/environment-modules/initrc",
+      "sudo echo \"module use /usr/share/modules/modulefiles\" | tee -a /etc/environment-modules/initrc",
+      "sudo echo \"module use /opt/modulefiles/oneapi\" | tee -a /etc/environment-modules/initrc",
+      "sudo echo \". /etc/environment-modules/initrc\" | tee -a /etc/profile.d/modules.sh",
+
       "sudo wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB -P /etc/apt/trusted.gpg.d/",
       "sudo apt-key add /etc/apt/trusted.gpg.d/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB",
       "sudo rm -f /etc/apt/trusted.gpg.d/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB",
+
       "sudo echo \"deb https://apt.repos.intel.com/oneapi all main\" | tee -a /etc/apt/sources.list.d/oneAPI.list",
       "sudo add-apt-repository -y \"deb https://apt.repos.intel.com/oneapi all main\"",
-
-      "sudo apt update -y",
-      "sudo apt upgrade -y",
-      "sudo apt install -y autoconf automake autopoint build-essential ca-certificates cmake cmake-curses-gui curl"
-      "sudo apt install -y diffutils environment-modulesi gcc-12 g++-12 gfortran-12 git git-lfs",
-      "sudo apt install -y libdb5.3 libdb5.3-dev libtool-bin libcurl4-openssl-dev libkrb5-dev lmod locales",
-      "sudo apt install -y ninja-build patch perl pipx pkgconf sphinx subversion tcl tcl-dev tcl-expect tzdata vim-nox",
-
       "sudo apt install -y intel-basekit-2024.2 intel-basekit-runtime-2024.2 intel-basekit-env-2024.2 intel-hpckit-2024.2 intel-hpckit-runtime-2024.2 intel-hpckit-env-2024.2",
       "sudo /opt/intel/oneapi/modulefiles-setup.sh --output-dir=/opt/modulefiles/oneapi --ignore-latest",
-
-      "sudo echo \"/opt/modulefiles/oneapi\" | tee -a /etc/environment-modules/modulespath",
     ]
     inline_shebang = "/bin/sh -x"
   }
