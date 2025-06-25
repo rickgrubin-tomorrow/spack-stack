@@ -88,17 +88,20 @@ build {
       "sudo apt update -y",
       "sudo apt install -y software-properties-common",
       "sudo apt upgrade -y",
-      "sudo apt install -y gnupg pkg-config build-essential",
+      "sudo apt install -y gpg gnupg pkg-config build-essential",
 
       "sudo apt install -y autoconf automake autopoint build-essential ca-certificates cmake cmake-curses-gui curl"
       "sudo apt install -y diffutils environment-modules gcc-12 g++-12 gfortran-12 git git-lfs",
-      "sudo apt install -y libdb5.3 libdb5.3-dev libtool-bin libcurl4-openssl-dev libkrb5-dev locales",
-      "sudo apt install -y ninja-build patch perl pipx pkgconf sphinx subversion tcl tcl-dev tcl-expect tzdata vim-nox",
+      "sudo apt install -y libdb5.3 libdb5.3-dev libtool-bin libcurl4-openssl-dev libkrb5-dev locales ninja-build",
+      "sudo apt install -y patch perl pipx pkgconf snapd sphinx subversion tcl tcl-dev tcl-expect tzdata vim-nox wget ",
+
+      "sudo mkdir -p /etc/apt/keyrings",
+      "wget -qO - https://dvc.org/deb/iterative.asc | gpg --dearmor -o /etc/apt/keyrings/packages.iterative.gpg",
+      "echo \"deb [arch=amd64 signed-by=/etc/apt/keyrings/packages.iterative.gpg] https://dvc.org/deb/ stable main\" | sudo tee /etc/apt/sources.list.d/dvc.list",
+      "sudo chmod 644 /etc/apt/keyrings/packages.iterative.gpg /etc/apt/sources.list.d/dvc.list",
+      "sudo apt install -y dvc",
 
       "sudo apt autoremove -y",
-      "sudo apt remove -y lmod",
-      "sudo rm -f /etc/profile.d/lmod.sh",
-      "sudo apt install -y environment-modules",
 
       "sudo sed -i 's/^[^#]/#&/' /etc/environment-modules/modulespath",
       "sudo sed -i '/module use/s/^/#/' /etc/environment-modules/initrc",
