@@ -88,12 +88,51 @@ build {
       "sudo apt update -y",
       "sudo apt install -y software-properties-common",
       "sudo apt upgrade -y",
-      "sudo apt install -y gpg gnupg pkg-config build-essential",
+      "sudo apt install -y gpg gnupg2 pkg-config build-essential",
 
       "sudo apt install -y autoconf automake autopoint build-essential ca-certificates cmake cmake-curses-gui curl"
       "sudo apt install -y diffutils environment-modules gcc-12 g++-12 gfortran-12 git git-lfs",
       "sudo apt install -y libdb5.3 libdb5.3-dev libtool-bin libcurl4-openssl-dev libkrb5-dev locales ninja-build",
       "sudo apt install -y patch perl pipx pkgconf snapd sphinx subversion tcl tcl-dev tcl-expect tzdata vim-nox wget ",
+
+      # future: update-alternatives
+      # update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 100
+      # update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 100
+      # update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-12 100
+
+      # future: install lua / Lmod
+      #   remove install of environment-modules if installing lua / lmod
+      # Install lua/lmod manually because apt only has older versions
+      # that are not compatible with the modern lua modules spack produces
+      # https://lmod.readthedocs.io/en/latest/030_installing.html#install-lua-x-y-z-tar-gz
+      "mkdir -p /opt/lua/5.1.4.9/src && cd $_",
+      "wget https://sourceforge.net/projects/lmod/files/lua-5.1.4.9.tar.bz2",
+      "tar -xvf lua-5.1.4.9.tar.bz2",
+      "cd lua-5.1.4.9",
+      "./configure --prefix=/opt/lua/5.1.4.9 2>&1 | tee log.config",
+      "make VERBOSE=1 2>&1 | tee log.make",
+      "make install 2>&1 | tee log.install",
+ 
+      cat << 'EOF' >> /etc/profile.d/02-lua.sh",
+      # Set environment variables for lua
+      "export PATH=\"/opt/lua/5.1.4.9/bin:$PATH\"",
+      "export LD_LIBRARY_PATH=\"/opt/lua/5.1.4.9/lib:$LD_LIBRARY_PATH\"",
+      "export CPATH=\"/opt/lua/5.1.4.9/include:$CPATH\"",
+      "export MANPATH=\"/opt/lua/5.1.4.9/man:$MANPATH\"",
+      "EOF",
+
+      "source /etc/profile.d/02-lua.sh",
+      "mkdir -p /opt/lmod/8.7/src",
+      "cd /opt/lmod/8.7/src",
+      "wget https://sourceforge.net/projects/lmod/files/Lmod-8.7.tar.bz2",
+      "tar -xvf Lmod-8.7.tar.bz2",
+      "cd Lmod-8.7",
+      # Note the weird prefix, lmod installs in PREFIX/lmod/X.Y automatically
+      "./configure --prefix=/opt/ --with-lmodConfigDir=/opt/lmod/8.7/config 2>&1 | tee log.config",
+      "make install 2>&1 | tee log.install",
+      "ln -sf /opt/lmod/lmod/init/profile /etc/profile.d/z00_lmod.sh",
+      "ln -sf /opt/lmod/lmod/init/cshrc /etc/profile.d/z00_lmod.csh",
+      "ln -sf /opt/lmod/lmod/init/profile.fish /etc/profile.d/z00_lmod.fish",
 
       "sudo mkdir -p /etc/apt/keyrings",
       "wget -qO - https://dvc.org/deb/iterative.asc | gpg --dearmor -o /etc/apt/keyrings/packages.iterative.gpg",
