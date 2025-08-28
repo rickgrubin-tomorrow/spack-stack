@@ -24,7 +24,7 @@ The following naming conventions are used on all fully-supported (tier 1) sites.
 +----------------------------------+---------------------------------------------------------+-------------------+------------------------------+
 | ``skylab-dev``                   | JEDI/Skylab environment for JEDI, models, EWOK          | ``se``            | ``se-apple-clang-14.0.6``    |
 +----------------------------------+---------------------------------------------------------+-------------------+------------------------------+
-| ``neptune-dev``                  | NEPTUNE standalone environment (with xNRL Python)       | ``ne``            | ``ne-oneapi-2024.2.1``       |
+| ``neptune-dev``                  | NEPTUNE-JEDI standalone environment                     | ``ne``            | ``ne-oneapi-2024.2.1``       |
 +----------------------------------+---------------------------------------------------------+-------------------+------------------------------+
 | ``cylc-dev``                     | Environment for running cylc (separate from other envs) | ``ce``            | ``ce-gcc-10.3.0``            |
 +----------------------------------+---------------------------------------------------------+-------------------+------------------------------+
@@ -50,7 +50,9 @@ Pre-configured sites (tier 1)
 | MSU                 +-----------------------+--------------------+--------------------------------------------------------+-----------------+
 |                     | Orion                 | oneAPI             | ``/apps/contrib/spack-stack/``                         | EPIC / JCSDA    |
 +---------------------+-----------------------+--------------------+--------------------------------------------------------+-----------------+
-| NASA                | Discover SCU17        | GCC, Intel         | ``/gpfsm/dswdev/jcsda/spack-stack/scu17/``             | JCSDA           |
+|                     | Discover SCU17        | GCC, Intel         | ``/gpfsm/dswdev/jcsda/spack-stack/scu17/``             | JCSDA           |
+| NASA                +-----------------------+--------------------+--------------------------------------------------------+-----------------+
+|                     | NAS                   | GCC, Intel         | ``/nobackup/gmao_SIteam/spack-stack/``                 | GMAO            |
 +---------------------+-----------------------+--------------------+--------------------------------------------------------+-----------------+
 | NCAR-Wyoming        + Derecho               | GCC, Intel         | ``/glade/work/epicufsrt/contrib/spack-stack/derecho/`` | EPIC / JCSDA    |
 +---------------------+-----------------------+--------------------+--------------------------------------------------------+-----------------+
@@ -72,7 +74,7 @@ Pre-configured sites (tier 1)
 |                     +-----------------------+--------------------+--------------------------------------------------------+-----------------+
 |                     | Blueback              | GCC, oneAPI        | ``/p/app/projects/NEPTUNE/spack-stack/``               | NRL             |
 +---------------------+-----------------------+--------------------+--------------------------------------------------------+-----------------+
-| Univ. of Wisconsin  | S4                    | Intel              | ``/data/prod/jedi/spack-stack/``                       | SSEC            |
+| Univ. of Wisconsin  | S4                    | Intel              | ``/data/prod/jedi/spack-stack/``                       | TBD             |
 +---------------------+-----------------------+--------------------+--------------------------------------------------------+-----------------+
 | **Cloud platforms**                                                                                                                         |
 +---------------------+-----------------------+--------------------+--------------------------------------------------------+-----------------+
@@ -133,6 +135,19 @@ The following is required for building new spack environments with any supported
    module use /discover/swdev/gmao_SIteam/modulefiles-SLES15
    module use /discover/swdev/jcsda/spack-stack/scu17/modulefiles
 
+.. _Preconfigured_Sites_NAS:
+
+------------------------------
+NASA NAS
+------------------------------
+
+The following is required for building new spack environments with any supported compiler on this platform.
+
+.. code-block:: console
+
+   module purge
+   module use /nobackup/gmao_SIteam/modulefiles
+
 .. _Preconfigured_Sites_Narwhal:
 
 ------------------------------
@@ -153,12 +168,18 @@ The following is required for building new spack environments with any supported
 NAVY HPCMP Nautilus
 ------------------------------
 
-The following is required for building new spack environments with any supported compiler on this platform.
+The following is required for building new spack environments with any supported compiler on this platform. For ``gcc@13.4.0``, see the additional instructions below.
 
 .. code-block:: console
 
    umask 0022
    module purge
+
+For ``gcc@13.4.0``, further run:
+
+.. code-block:: console
+
+   module use /p/app/projects/NEPTUNE/spack-stack/gcc-13.4.0/modulefiles
 
 
 .. _Preconfigured_Sites_Blueback:
@@ -185,12 +206,7 @@ The following is required for building new spack environments with any supported
 
 .. code-block:: console
 
-   module purge
-   # ignore that the sticky module ncarenv/... is not unloaded
-   export LMOD_TMOD_FIND_FIRST=yes
-   module load ncarenv/23.09
-   module use /glade/work/epicufsrt/contrib/spack-stack/derecho/modulefiles
-
+   module --force purge
 
 .. _Preconfigured_Sites_Acorn:
 
