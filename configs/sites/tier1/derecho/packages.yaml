@@ -101,9 +101,9 @@ packages:
     buildable: false
     externals:
     - spec: qt@5.14.2
-   # Newer versions don't work, some headers are missing
-    #prefix: /glade/u/apps/casper/24.12/spack/opt/spack/qt/5.14.2/gcc/12.4.0/6suc
-    #prefix: /glade/u/apps/casper/24.12/spack/opt/spack/qt/5.14.2/gcc/12.4.0/axtw
+      # Newer versions don't work, some headers are missing
+      #prefix: /glade/u/apps/casper/24.12/spack/opt/spack/qt/5.14.2/gcc/12.4.0/6suc
+      #prefix: /glade/u/apps/casper/24.12/spack/opt/spack/qt/5.14.2/gcc/12.4.0/axtw
       prefix: /glade/u/apps/derecho/23.09/spack/opt/spack/qt/5.14.2/gcc/7.5.0/eqcj
   sed:
     externals:

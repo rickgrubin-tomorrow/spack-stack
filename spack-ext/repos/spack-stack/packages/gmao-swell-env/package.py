@@ -21,7 +21,7 @@ class GmaoSwellEnv(BundlePackage):
     depends_on("jedi-base-env", type="run")
 
     # Add CRTM 2.4.0
-    depends_on("crtm@v2.4-jedi.2", type="run")
+    depends_on("crtm", type="run")
 
     # Additional dependencies for JEDI used by swell
     depends_on("fms", type="run")
@@ -49,11 +49,7 @@ class GmaoSwellEnv(BundlePackage):
     depends_on("py-pyyaml", type="run")
     depends_on("py-ruamel-yaml", type="run")
     depends_on("py-ruamel-yaml-clib", type="run")
-    # Note that the +delayed option is for compatibility
-    # with the py-xnrl package (this restricts py-dask
-    # to certain versions, since the newest versions
-    # don't have that option anymore.
-    depends_on("py-dask +delayed", type="run")
+    depends_on("py-dask", type="run")
 
     # Future dependencies needed
     # depends_on("py-bokeh", type="run")
@@ -68,7 +64,7 @@ class GmaoSwellEnv(BundlePackage):
     # depends_on("py-seaborn", type="run")
 
     conflicts(
-        "%gcc platform=darwin",
+        "platform=darwin %gcc",
         msg="gmao-swell-env does " + "not build with gcc (11?) on macOS (12), use apple-clang",
     )
 

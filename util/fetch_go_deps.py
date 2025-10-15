@@ -65,11 +65,7 @@ for spec_str in args.spec:
 for spec in env.all_specs():
     if not spec.concrete:
         continue
-<<<<<<< HEAD
-
-=======
      
->>>>>>> upstream/release/1.9.0
     # Check if the package depends on go or is user specified
     is_user_specified = False
     for user_spec in user_specs:
@@ -82,22 +78,17 @@ for spec in env.all_specs():
         fetch_it = any(dep.name == 'go' for dep in spec.dependencies())
     else:
         fetch_it = False
-<<<<<<< HEAD
 
     if fetch_it:
         print(f"Processing: {spec.name}@{spec.version}/{spec.dag_hash()}")
 
-=======
-    
     if fetch_it:
         print(f"Processing: {spec.name}@{spec.version}/{spec.dag_hash()}")
      
->>>>>>> upstream/release/1.9.0
         # Check if package actually has a go dependency
         if 'go' not in spec:
             print(f"  Warning: {spec.name} does not have a 'go' dependency, skipping")
             continue
-<<<<<<< HEAD
 
         pkg = spec.package
         pkg.do_stage()
@@ -106,8 +97,6 @@ for spec in env.all_specs():
         go_dep = spec["go"]
         dep_go_path = os.path.join(go_dep.prefix.bin, "go")
 
-=======
-         
         pkg = spec.package
         pkg.do_stage()
      
@@ -115,16 +104,11 @@ for spec in env.all_specs():
         go_dep = spec["go"]
         dep_go_path = os.path.join(go_dep.prefix.bin, "go")
      
->>>>>>> upstream/release/1.9.0
         if not which(dep_go_path) and args.install_go:
             print(f"  Installing go dependency: {go_dep}")
             installer = PackageInstaller([go_dep.package])
             installer.install()
-<<<<<<< HEAD
-
-=======
      
->>>>>>> upstream/release/1.9.0
         # Now try to use the go dependency's go executable
         if which(dep_go_path):
             go_exe = Executable(dep_go_path)

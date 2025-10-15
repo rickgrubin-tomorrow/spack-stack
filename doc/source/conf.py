@@ -21,13 +21,13 @@ sys.path.insert(0, os.path.abspath('.'))
 
 project = 'spack-stack'
 copyright = '2025 '
-author = 'Dominikus Heinzeller, Alexander Richert, Evan Parker, Steve Herbener, Steve Grace, Cameron Book, Ratko Vasic, Natalie Perlin, Rick Grubin'
+author = 'spack-stack collaboration'
 
 # The short X.Y version
-version = '1.9'
+version = 'dev'
 
 # The full version, including alpha/beta/rc tags
-release = '1.9.3'
+release = 'develop'
 
 numfig = True
 

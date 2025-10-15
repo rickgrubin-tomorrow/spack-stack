@@ -24,7 +24,7 @@ The following naming conventions are used on all fully-supported (tier 1) sites.
 +----------------------------------+---------------------------------------------------------+-------------------+------------------------------+
 | ``skylab-dev``                   | JEDI/Skylab environment for JEDI, models, EWOK          | ``se``            | ``se-apple-clang-14.0.6``    |
 +----------------------------------+---------------------------------------------------------+-------------------+------------------------------+
-| ``neptune-dev``                  | NEPTUNE standalone environment (with xNRL Python)       | ``ne``            | ``ne-oneapi-2024.2.1``       |
+| ``neptune-dev``                  | NEPTUNE-JEDI standalone environment                     | ``ne``            | ``ne-oneapi-2024.2.1``       |
 +----------------------------------+---------------------------------------------------------+-------------------+------------------------------+
 | ``cylc-dev``                     | Environment for running cylc (separate from other envs) | ``ce``            | ``ce-gcc-10.3.0``            |
 +----------------------------------+---------------------------------------------------------+-------------------+------------------------------+
@@ -46,9 +46,9 @@ Pre-configured sites (tier 1)
 +=====================+=======================+====================+========================================================+=================+
 | **HPC platforms**                                                                                                                           |
 +---------------------+-----------------------+--------------------+--------------------------------------------------------+-----------------+
-|                     | Hercules              | GCC, Intel         | ``/apps/contrib/spack-stack/``                         | EPIC / JCSDA    |
+|                     | Hercules              | GCC, oneAPI        | ``/apps/contrib/spack-stack/``                         | EPIC / JCSDA    |
 | MSU                 +-----------------------+--------------------+--------------------------------------------------------+-----------------+
-|                     | Orion                 | Intel              | ``/apps/contrib/spack-stack/``                         | EPIC / JCSDA    |
+|                     | Orion                 | oneAPI             | ``/apps/contrib/spack-stack/``                         | EPIC / JCSDA    |
 +---------------------+-----------------------+--------------------+--------------------------------------------------------+-----------------+
 |                     | Discover SCU17        | GCC, Intel         | ``/gpfsm/dswdev/jcsda/spack-stack/scu17/``             | JCSDA           |
 | NASA                +-----------------------+--------------------+--------------------------------------------------------+-----------------+
@@ -68,13 +68,13 @@ Pre-configured sites (tier 1)
 |                     +-----------------------+--------------------+--------------------------------------------------------+-----------------+
 |                     | Jet                   | GCC, Intel         | ``/contrib/spack-stack``                               | EPIC / NOAA-EMC |
 +---------------------+-----------------------+--------------------+--------------------------------------------------------+-----------------+
-|                     | Narwhal               | GCC, Intel, oneAPI | ``/p/app/projects/NEPTUNE/spack-stack/``               | NRL             |
+|                     | Narwhal               | GCC, oneAPI        | ``/p/app/projects/NEPTUNE/spack-stack/``               | NRL             |
 |                     +-----------------------+--------------------+--------------------------------------------------------+-----------------+
-| U.S. Navy (HPCMP)   | Nautilus              | GCC, Intel, oneAPI | ``/p/app/projects/NEPTUNE/spack-stack/``               | NRL             |
+| U.S. Navy (HPCMP)   | Nautilus              | GCC, oneAPI        | ``/p/app/projects/NEPTUNE/spack-stack/``               | NRL             |
 |                     +-----------------------+--------------------+--------------------------------------------------------+-----------------+
-|                     | Blueback (earlyaccess)| GCC, oneAPI        | (experimental only, no project directories yet         | NRL             |
+|                     | Blueback              | GCC, oneAPI        | ``/p/app/projects/NEPTUNE/spack-stack/``               | NRL             |
 +---------------------+-----------------------+--------------------+--------------------------------------------------------+-----------------+
-| Univ. of Wisconsin  | S4                    | Intel              | ``/data/prod/jedi/spack-stack/``                       | SSEC            |
+| Univ. of Wisconsin  | S4                    | Intel              | ``/data/prod/jedi/spack-stack/``                       | TBD             |
 +---------------------+-----------------------+--------------------+--------------------------------------------------------+-----------------+
 | **Cloud platforms**                                                                                                                         |
 +---------------------+-----------------------+--------------------+--------------------------------------------------------+-----------------+
@@ -100,12 +100,11 @@ The following is required for building new spack environments with any supported
 
    # To access /apps/contrib/spack-stack directory, first login to orion-devel-1 or orion-devel-2 login node.
    # Then sudo to role-epic account.
+
    module purge
-
-``spack-stack`` module files on **orion** require a one-time modification before they will properly load. These module files rely on a system-provided module file that alters the environment variable ``MODULEPATH`` in such a way that it prevents the expected loading of ``spack-stack`` modules. This is only necessary for *Intel oneAPI* environment module files. After the stack is created, modify the stack modules as follows:
-
-.. code-block:: console
+   module load spack-managed-x86-64_v3/v1.0
    
+<<<<<<< HEAD
    # Edit /path/to/env/install/modulefiles/Core/stack-oneapi/<version>.lua
    # Change:
    # -- prerequisite modules
@@ -144,6 +143,7 @@ to
    # load("intel-oneapi-mpi/2021.13.1")
    # prereq("intel-oneapi-mpi/2021.13.1")
 
+=======
 .. _Preconfigured_Sites_Hercules:
 
 ------------------------------
@@ -157,7 +157,7 @@ The following is required for building new spack environments with any supported
    # To access /apps/contrib/spack-stack directory, first login to hercules-devel-1 or hercules-devel-2 login node.
    # Then sudo to role-epic account.
    module purge
-
+   module load spack-managed-x86-64_v3/v1.0
 
 ``spack-stack`` module files on **hercules** require a one-time modification before they will properly load. These module files rely on a system-provided module file that alters the environment variable ``MODULEPATH`` in such a way that it prevents the expected loading of ``spack-stack`` modules. This is only necessary for *Intel oneAPI* environment module files. After the stack is created, modify the stack modules as follows:
 
@@ -201,6 +201,13 @@ to
    # load("intel-oneapi-mpi/2021.13.1")
    # prereq("intel-oneapi-mpi/2021.13.1")
 
+=======
+
+   module purge
+   module load spack-managed-x86-64_v3/v1.0
+
+
+>>>>>>> upstream/develop
 .. _Preconfigured_Sites_Discover_SCU17:
 
 ------------------------------
@@ -234,93 +241,6 @@ The following is required for building new spack environments with any supported
 NAVY HPCMP Narwhal
 ------------------------------
 
-The following is required for building new spack environments with Intel on this platform.. Don't use ``module purge`` on Narwhal!
-
-.. code-block:: console
-
-   umask 0022
-   module unload PrgEnv-cray
-   module load PrgEnv-intel/8.4.0
-   module unload intel
-   module load intel-classic/2023.2.0
-   module unload cray-mpich
-   module unload craype-network-ofi
-   # Warning. Do not load craype-network-ucx
-   # or cray-mpich-ucx/8.1.26!
-   # There is a bug in the modulefile that prevents
-   # spack from setting the environment for its
-   # build steps when the module is already
-   # loaded. Instead, let spack load it when the
-   # package requires it.
-   #module load craype-network-ucx
-   #module load cray-mpich-ucx/8.1.26
-   module load libfabric/1.12.1.2.2.1
-   module unload cray-libsci
-   module load cray-libsci/23.05.1.4
-
-The following is required for building new spack environments with Intel oneAPI on this platform.. Don't use ``module purge`` on Narwhal!
-
-.. code-block:: console
-
-   umask 0022
-   module unload PrgEnv-cray
-   module load PrgEnv-intel/8.4.0
-   module unload intel
-   module load intel/2024.2
-   module unload cray-mpich
-   module unload craype-network-ofi
-   # Warning. Do not load craype-network-ucx
-   # or cray-mpich-ucx/8.1.26!
-   # There is a bug in the modulefile that prevents
-   # spack from setting the environment for its
-   # build steps when the module is already
-   # loaded. Instead, let spack load it when the
-   # package requires it.
-   #module load craype-network-ucx
-   #module load cray-mpich-ucx/8.1.26
-   module load libfabric/1.12.1.2.2.1
-   module unload cray-libsci
-   module load cray-libsci/23.05.1.4
-
-The following is required for building new spack environments with GNU on this platform.. Don't use ``module purge`` on Narwhal!
-
-.. code-block:: console
-
-   umask 0022
-   module unload PrgEnv-cray
-   module load PrgEnv-gnu/8.4.0
-   module unload gcc
-   module load gcc/10.3.0
-   module unload cray-mpich
-   module unload craype-network-ofi
-   # Warning. Do not load craype-network-ucx
-   # or cray-mpich-ucx/8.1.26!
-   # There is a bug in the modulefile that prevents
-   # spack from setting the environment for its
-   # build steps when the module is already
-   # loaded. Instead, let spack load it when the
-   # package requires it.
-   #module load craype-network-ucx
-   #module load cray-mpich-ucx/8.1.26
-   module load libfabric/1.12.1.2.2.1
-   module unload cray-libsci
-   module load cray-libsci/23.05.1.4
-
-.. warning::
-   After the successful build of a spack-stack environment, a utility script ``util/narwhal/fix_libsci.sh`` must be run to replace references to an old version of ``libsci`` in several shared libraries. See https://github.com/JCSDA/spack-stack/pull/1449 and https://github.com/JCSDA/spack-stack/issues/1447 for more information.
-
-.. code-block:: console
-
-   # After running 'spack install' (or after 'spack stack setup-meta-modules')
-   ./util/narwhal/fix_libsci.sh 2>&1 | tee log.ENV_NAME_HERE.fix_libsci.001
-
-
-.. _Preconfigured_Sites_Nautilus:
-
-------------------------------
-NAVY HPCMP Nautilus
-------------------------------
-
 The following is required for building new spack environments with any supported compiler on this platform.
 
 .. code-block:: console
@@ -329,57 +249,38 @@ The following is required for building new spack environments with any supported
    module purge
 
 
+.. _Preconfigured_Sites_Nautilus:
+
+------------------------------
+NAVY HPCMP Nautilus
+------------------------------
+
+The following is required for building new spack environments with any supported compiler on this platform. For ``gcc@13.4.0``, see the additional instructions below.
+
+.. code-block:: console
+
+   umask 0022
+   module purge
+
+For ``gcc@13.4.0``, further run:
+
+.. code-block:: console
+
+   module use /p/app/projects/NEPTUNE/spack-stack/gcc-13.4.0/modulefiles
+
+
 .. _Preconfigured_Sites_Blueback:
 
 ------------------------------
 NAVY HPCMP Blueback
 ------------------------------
 
-The following is required for building new spack environments with Intel oneAPI on this platform.. Don't use ``module purge`` on Blueback!
+The following is required for building new spack environments with any supported compiler on this platform.
 
 .. code-block:: console
 
    umask 0022
-   module unload PrgEnv-cray
-   module load PrgEnv-intel/8.4.0
-   module unload intel
-   module load intel/2024.2
-   module unload cray-mpich
-   module unload craype-network-ofi
-   # Warning. Do not load craype-network-ucx
-   # or cray-mpich-ucx/8.1.21!
-   # There is a bug in the modulefile that prevents
-   # spack from setting the environment for its
-   # build steps when the module is already
-   # loaded. Instead, let spack load it when the
-   # package requires it.
-   #module load craype-network-ucx
-   #module load cray-mpich-ucx/8.1.21
-   module load libfabric/1.12.1.2.2.1
-   module unload cray-libsci
-   module load cray-libsci/23.05.1.4
-
-The following is required for building new spack environments with GNU on this platform.. Don't use ``module purge`` on Blueback!
-
-   umask 0022
-   module unload PrgEnv-cray
-   module load PrgEnv-gnu/8.4.0
-   module unload gcc
-   module load gcc/12.1.0
-   module unload cray-mpich
-   module unload craype-network-ofi
-   # Warning. Do not load craype-network-ucx
-   # or cray-mpich-ucx/8.1.21!
-   # There is a bug in the modulefile that prevents
-   # spack from setting the environment for its
-   # build steps when the module is already
-   # loaded. Instead, let spack load it when the
-   # package requires it.
-   #module load craype-network-ucx
-   #module load cray-mpich-ucx/8.1.21
-   module load libfabric/1.12.1.2.2.1
-   module unload cray-libsci
-   module load cray-libsci/23.05.1.4
+   module purge
 
 
 .. _Preconfigured_Sites_Derecho:
@@ -392,7 +293,11 @@ The following is required for building new spack environments with any supported
 
 .. code-block:: console
 
+<<<<<<< HEAD
    module purge
+=======
+   module --force purge
+>>>>>>> upstream/develop
 
 .. _Preconfigured_Sites_Acorn:
 
@@ -583,6 +488,15 @@ Blackpearl
 Blackpearl is an Oracle Linux 9 installation running under Windows Subsystem for Linux (WSL2) on Windows 11. This is the development system of one of the spack-stack developers and maybe useful as an example configuration for users with a similar setup.
 
 
+.. _Preconfigured_Sites_Bounty:
+
+------------------------------
+Bounty
+------------------------------
+
+Bounty is an Alma Linux 9 installation running under Windows Subsystem for Linux (WSL2) on Windows 11. This is the development system of one of the spack-stack developers and maybe useful as an example configuration for users with a similar setup.
+
+
 .. _Preconfigured_Sites_Casper:
 
 ------------------------------
@@ -601,6 +515,34 @@ The following is required for building new spack environments with any supported
    module load ncarenv/23.10
    module use /glade/work/epicufsrt/contrib/spack-stack/casper/modulefiles
    module load ecflow/5.8.4
+
+
+.. _Preconfigured_Sites_Jean:
+
+------------------------------
+ARL HPCMP Jean
+------------------------------
+
+The following is required for building new spack environments with Intel oneAPI on this platform.
+
+.. code-block:: console
+
+   umask 0022
+   module purge
+   module use /p/work1/heinzell/oneapi-2024.2.1/modulefiles
+
+
+------------------------------
+ERDC HPCMP Wheat
+------------------------------
+
+The following is required for building new spack environments with Intel oneAPI on this platform.
+
+.. code-block:: console
+
+   umask 0022
+   module purge
+   module use /p/global/Projects/NEPTUNE/spack-stack/oneapi-2024.2.1/modulefiles
 
 
 .. _Preconfigured_Sites_EMC_RHEL:
@@ -709,7 +651,7 @@ The following instructions apply to the basic environments (``unified-dev``, ``s
    emacs site/*.yaml
 
    # Process/concretize the specs; optionally check for duplicate packages
-   spack concretize | ${SPACK_STACK_DIR}/util/show_duplicate_packages.py -d [-c] log.concretize
+   spack concretize | ${SPACK_STACK_DIR}/util/show_duplicate_packages.py
 
    # Optional step for systems with a pre-configured spack mirror, see below.
 

@@ -7,10 +7,11 @@ packages:
     buildable: False
   cray-mpich:
     externals:
-    - spec: cray-mpich@8.1.29%gcc@12.4.0 +wrappers
+    - spec: cray-mpich@8.1.29 +wrappers %gcc@12.4.0
+      prefix: /opt/cray/pe/mpich/8.1.29/ofi/gnu/12.3
       modules:
-      - craype/2.7.31
       - ncarenv/24.12
-      - gcc/12.4.0 
-      - libfabric/1.15.2.0
+      - craype/2.7.31
       - cray-mpich/8.1.29
+      - libfabric/1.15.2.0
+      - cray-pals/1.2.11

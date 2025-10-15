@@ -1,0 +1,32 @@
+packages:
+  all:
+    compiler:: [gcc@12.2.1]
+    providers:
+      mpi:: [openmpi@4.1.4]
+      # Remove the next three lines to switch to intel-oneapi-mkl
+      blas:: [openblas]
+      fftw-api:: [fftw]
+      lapack:: [openblas]
+  mpi:
+    buildable: False
+  openmpi:
+    buildable: false
+    externals:
+    - spec: openmpi@4.1.4%gcc@12.2.1
+      modules:
+      - openmpi/4.1.4
+      prefix: /usr/mpi/gcc/openmpi-4.1.4-hfi
+
+  ectrans:
+    require::
+    - '@1.2.0 ~mkl +fftw'
+  gsibec:
+    require::
+    - '@1.2.1 ~mkl'
+  py-numpy:
+    require::
+    - '@1.26'
+    - '^openblas'
+  zlib-ng:
+    require:
+      - '~shared'

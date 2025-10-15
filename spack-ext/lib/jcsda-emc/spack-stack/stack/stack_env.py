@@ -97,6 +97,7 @@ class StackEnv(object):
         self.install_prefix = kwargs.get("install_prefix", None)
         self.upstreams = kwargs.get("upstreams", None)
         self.modifypkg = kwargs.get("modifypkg", None)
+        self.keepallcompilers = kwargs.get("keep_all_compilers", None)
 
         if not self.name:
             # site = self.site if self.site else 'default'
@@ -131,7 +132,7 @@ class StackEnv(object):
             #
             default_in_data = default_in_yaml[section]
             update_in_data = update_in_yaml[section]
-            result_data = spack.config.merge_yaml(default_in_data, update_in_data)
+            result_data = spack.schema.merge_yaml(default_in_data, update_in_data)
             result_out_yaml = OrderedDict()
             result_out_yaml[section] = result_data
             # Write file, but sanitize the output.
@@ -218,6 +219,21 @@ class StackEnv(object):
                 upstream_paths += self.get_upstream_realpaths(entry[1]["install_tree"])
         return upstream_paths
 
+    def filter_site_compilers(self, compilers_yaml_path, compiler_to_keep):
+        compiler_to_keep = re.sub("@=", "@", compiler_to_keep)
+        config_compiler_name = re.sub("@.*", "", compiler_to_keep)
+        with open(compilers_yaml_path, "r") as f:
+            compilers_yaml = syaml.load_config(f)
+        n_compilers = len(compilers_yaml["compilers"])
+        for i in range(n_compilers-1, -1, -1):
+            spec_tmp = compilers_yaml["compilers"][i]["compiler"]["spec"]
+            spec_tmp = re.sub("@=", "@", spec_tmp)
+            name_tmp = re.sub("@.*", "", spec_tmp)
+            if (name_tmp == config_compiler_name) and (spec_tmp != compiler_to_keep):
+                del(compilers_yaml["compilers"][i])
+        with open(compilers_yaml_path, "w") as f:
+            syaml.dump_config(compilers_yaml, stream=f)
+
     def write(self):
         """Write environment out to a spack.yaml in <env_dir>/<name>.
         Will create env_dir if it does not exist.
@@ -233,6 +249,9 @@ class StackEnv(object):
         # Copy site config first so that it takes precedence in env
         if self.site != "none":
             self._copy_site_includes()
+            # By default remove all other versions of the specified compiler
+            if not self.keepallcompilers and "@" in self.compiler:
+                self.filter_site_compilers(os.path.join(env_dir, "site", "compilers.yaml"), self.compiler)
 
         # Copy common include files
         self._copy_common_includes()
@@ -372,7 +391,7 @@ class StackEnv(object):
         for section in spack.config.SECTION_SCHEMAS.keys():
             original = original_sections.get(section, {})
             existing = spack.config.get(section, scope=env_scope)
-            new = spack.config.merge_yaml(existing, original)
+            new = spack.schema.merge_yaml(existing, original)
             if existing and section in existing:
                 spack.config.set(section, new[section], env_scope)
 

@@ -12,7 +12,7 @@ set -x
 
 for compiler in $COMPILERS; do
   for template in $TEMPLATES; do
-    envname=build-$template-${compiler/@/-}
+    [[ ${compiler} == *"@="* ]] && envname=build-$template-${compiler/@=/-} || envname=build-$template-${compiler/@/-}
     envdir=$RUNDIR/$RUNID/envs/$envname
     cd $envdir
     spack env activate .
@@ -21,6 +21,6 @@ for compiler in $COMPILERS; do
   done
 done
 
-if [ "$TEST_UFSWM" == ON ]; then
-  . $(dirname $0)/apptests/test_ufswm.sh
+if [ "$TEST_UFSWM" == "ON" ]; then
+  . ${WORK_DIR:-$(dirname $0)}/apptests/test_ufswm.sh
 fi

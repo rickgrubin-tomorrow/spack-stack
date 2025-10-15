@@ -5,10 +5,6 @@ modules:
     roots:
       tcl: $env/install/modulefiles
     tcl:
-      # Core compiler is a dummy that is not used to build the stack, do not change.
-      # Hopefully nobody is trying to build software with gcc-4.6 in 2023 ...
-      core_compilers::
-      - gcc@4.6
       projections:
         all: '{compiler.name}/{compiler.version}/{name}/{version}'
         ^mpi: '{^mpi.name}/{^mpi.version}/{compiler.name}/{compiler.version}/{name}/{version}'
@@ -136,12 +132,8 @@ modules:
           ^esmf@8.7.0+debug snapshot=none: 'esmf-8.7.0-debug'
           ^esmf@8.8.0~debug snapshot=none: 'esmf-8.8.0'
           ^esmf@8.8.0+debug snapshot=none: 'esmf-8.8.0-debug'
-          ^esmf@8.9.0b08~debug snapshot=b08: 'esmf-8.9.0b08'
-          ^esmf@8.9.0b08+debug snapshot=b08: 'esmf-8.9.0b08-debug'
-          ^esmf@8.9.0b09~debug snapshot=b09: 'esmf-8.9.0b09'
-          ^esmf@8.9.0b09+debug snapshot=b09: 'esmf-8.9.0b09-debug'
-          ^esmf@8.9.0b11~debug snapshot=b11: 'esmf-8.9.0b11'
-          ^esmf@8.9.0b11+debug snapshot=b11: 'esmf-8.9.0b11-debug'
+          ^esmf@8.9.0~debug snapshot=none: 'esmf-8.9.0'
+          ^esmf@8.9.0+debug snapshot=none: 'esmf-8.9.0-debug'
       openmpi:
         environment:
           set:

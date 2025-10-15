@@ -8,8 +8,9 @@ spack:
   definitions:
   - compilers: ['%aocc', '%apple-clang', '%gcc', '%intel', '%oneapi']
   - packages:
-      - neptune-env +espc                           ^esmf@=8.8.0
-      - neptune-python-env +xnrl ^neptune-env +espc ^esmf@=8.8.0
+      - neptune-env ~debug +espc ^esmf@=8.9.0 snapshot=none
+      - neptune-env +debug +espc ^esmf@=8.9.0 snapshot=none
+      - neptune-python-env ^neptune-env ~debug +espc ^esmf@=8.9.0 snapshot=none
 
   specs:
     - matrix:
@@ -21,3 +22,8 @@ spack:
       - neptune-python-env%intel
       # Same for LLVM compilers
       - neptune-python-env%clang
+  packages:
+    # Avoid duplicate builds of parallelio +pnetcdf and ~pnetcdf
+    parallelio:
+      require:
+      - '~pnetcdf'

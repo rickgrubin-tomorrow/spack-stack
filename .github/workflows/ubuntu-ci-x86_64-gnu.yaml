@@ -51,7 +51,7 @@ jobs:
           # Set up spack-stack
           source ./setup.sh
 
-          declare -a TEMPLATES=("unified-dev" "skylab-dev" "cylc-dev")
+          declare -a TEMPLATES=("unified-dev" "skylab-dev" "cylc-dev" "neptune-dev")
           for TEMPLATE in "${TEMPLATES[@]}"; do
             if [[ "${TEMPLATE}" == *"unified-dev"* ]]; then
               export ENVNAME=ue-gcc-11.4.0-buildcache
@@ -59,12 +59,16 @@ jobs:
               export ENVNAME=se-gcc-11.4.0-buildcache
             elif [[ "${TEMPLATE}" == *"cylc-dev"* ]]; then
               export ENVNAME=ce-gcc-11.4.0-buildcache
+            elif [[ "${TEMPLATE}" == *"neptune-dev"* ]]; then
+              export ENVNAME=ne-gcc-11.4.0-buildcache
             fi
             echo "Creating environment ${ENVNAME} from template ${TEMPLATE}"
 
             export ENVDIR=$PWD/envs/${ENVNAME}
             spack stack create env --site linux.default --template ${TEMPLATE} --name ${ENVNAME} --compiler gcc
             spack env activate ${ENVDIR}
+
+            unset SPACK_DISABLE_LOCAL_CONFIG
             export SPACK_SYSTEM_CONFIG_PATH="${ENVDIR}/site"
 
             # Find external packages
@@ -82,7 +86,8 @@ jobs:
             # Find compilers
             spack compiler find --scope system
 
-            export -n SPACK_SYSTEM_CONFIG_PATH
+            export SPACK_DISABLE_LOCAL_CONFIG=true
+            unset SPACK_SYSTEM_CONFIG_PATH
 
             # For buildcaches
             spack config add config:install_tree:padded_length:200
@@ -96,7 +101,7 @@ jobs:
 
             # Concretize and check for duplicates
             spack concretize 2>&1 | tee log.concretize.gnu-11.4.0-buildcache
-            ${SPACK_STACK_DIR}/util/show_duplicate_packages.py -d log.concretize.gnu-11.4.0-buildcache -i fms -i crtm -i crtm-fix -i esmf -i mapl
+            ${SPACK_STACK_DIR}/util/show_duplicate_packages.py -i fms -i crtm -i crtm-fix -i esmf -i mapl -i neptune-env
 
             # Add and update source cache
             spack mirror add local-source file:///home/ubuntu/spack-stack/source-cache/
@@ -131,16 +136,6 @@ jobs:
               echo "jedi-ufs-env ..."
               spack install --fail-fast --source --no-check-signature jedi-ufs-env 2>&1 | tee log.install.gnu-11.4.0-buildcache.jedi-ufs-env
               spack buildcache create -u /home/ubuntu/spack-stack/build-cache/ jedi-ufs-env
-
-            elif [[ "${TEMPLATE}" == *"cylc-dev"* ]]; then
-              # Workaround for not being able to install rust from build-cache, see 
-              # https://github.com/spack/spack/issues/48971
-              echo "rust dependencies ..."
-              spack install --verbose --source --no-check-signature --only=dependencies rust 2>&1 | tee log.install.gnu-11.4.0-buildcache.${TEMPLATE}.001.rust-dependencies
-
-              # rust from source
-              echo "rust (from source) ..."
-              spack install --verbose --source --no-cache rust 2>&1 | tee log.install.gnu-11.4.0-buildcache.${TEMPLATE}.002.rust
             fi
 
             # the rest
@@ -177,7 +172,7 @@ jobs:
 
           # Concretize and check for duplicates
           spack concretize --force 2>&1 | tee log.concretize.gnu-11.4.0
-          ${SPACK_STACK_DIR}/util/show_duplicate_packages.py -d log.concretize.gnu-11.4.0 -i fms -i crtm -i crtm-fix -i esmf -i mapl
+          ${SPACK_STACK_DIR}/util/show_duplicate_packages.py -i fms -i crtm -i crtm-fix -i esmf -i mapl
 
           # Add binary cache back in
           spack mirror add local-binary file:///home/ubuntu/spack-stack/build-cache/
@@ -225,8 +220,8 @@ jobs:
 
           module use ${ENVDIR}/install/modulefiles/Core
           module load stack-gcc/11.4.0
-          module load stack-openmpi/5.0.5
-          module load stack-python/3.11.7
+          module load stack-openmpi/5.0.6
+          module load stack-python/3.11.11
           module available
 
           module load jedi-ufs-env

@@ -25,13 +25,13 @@ class BaseEnv(BundlePackage):
     depends_on("git", type="run")
     depends_on("wget", type="run")
     depends_on("curl", type="run")
+    depends_on("cloc", type="run")
 
     # I/O
     depends_on("zlib-api", type="run")
     depends_on("hdf5", type="run")
     depends_on("netcdf-c", type="run")
     depends_on("netcdf-fortran", type="run")
-    depends_on("parallel-netcdf", type="run")
     depends_on("parallelio", type="run")
     depends_on("nccmp", type="run")
 
@@ -41,5 +41,6 @@ class BaseEnv(BundlePackage):
     depends_on("py-wheel", type="run")
     depends_on("py-setuptools", type="run")
     depends_on("py-setuptools-scm", type="run")
+    depends_on("py-pytest", type="run")
 
     # There is no need for install() since there is no code.
