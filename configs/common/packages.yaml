@@ -182,7 +182,6 @@ packages:
     - '+python'
     - '+grib2'
   metplus:
-    require:
     require: '@6.0.0'
   metis:
     require: '+int64 +real64'
