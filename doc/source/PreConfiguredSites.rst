@@ -104,7 +104,6 @@ The following is required for building new spack environments with any supported
    module purge
    module load spack-managed-x86-64_v3/v1.0
    
-<<<<<<< HEAD
    # Edit /path/to/env/install/modulefiles/Core/stack-oneapi/<version>.lua
    # Change:
    # -- prerequisite modules
@@ -207,7 +206,6 @@ to
    module load spack-managed-x86-64_v3/v1.0
 
 
->>>>>>> upstream/develop
 .. _Preconfigured_Sites_Discover_SCU17:
 
 ------------------------------
@@ -293,11 +291,9 @@ The following is required for building new spack environments with any supported
 
 .. code-block:: console
 
-<<<<<<< HEAD
    module purge
 =======
    module --force purge
->>>>>>> upstream/develop
 
 .. _Preconfigured_Sites_Acorn:
 
