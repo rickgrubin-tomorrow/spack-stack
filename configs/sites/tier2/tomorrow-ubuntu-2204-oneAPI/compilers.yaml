@@ -10,7 +10,7 @@ compilers:
     operating_system: ubuntu22.04
     target: x86_64
     modules:
-    - tbb/2021.13
+    - tbb/2022.1
     - compiler-rt/2024.2.1
     - compiler/2024.2.1
     - ifort/2024.2.1

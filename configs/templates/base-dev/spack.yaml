@@ -8,8 +8,8 @@ spack:
   - common
   definitions:
   - compilers:
-    #- '%oneapi'
-    - '%intel'
+    - '%oneapi'
+    #- '%intel'
   - packages:
     - base-env
 
@@ -19,5 +19,5 @@ spack:
     - [$compilers]
   packages:
     all:
-      #prefer: ['%oneapi']
-      prefer: ['%intel']
+      prefer: ['%oneapi']
+      #prefer: ['%intel']
