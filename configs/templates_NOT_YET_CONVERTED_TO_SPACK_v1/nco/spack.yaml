@@ -1,0 +1,88 @@
+spack:
+  concretizer:
+    unify: when_possible
+
+  config:
+    install_tree:
+      root: $env/install
+    deprecated: true
+
+  view: false
+
+  include: []
+
+  specs:
+  - awscli
+  - bacio
+  - boost
+  - bufr
+  - cdo
+  - cfitsio
+  - cmake
+  - crtm@=2.4.0.1
+  - curl
+  - ecflow
+  - eckit
+  - ecmwf-atlas
+  - eigen
+  - esmf@8.8.0
+  - fckit
+  - fms
+  - g2
+  - g2c
+  - g2tmpl
+  - gdal@3.8.5
+  - geos
+  - gfsio
+  - gftl-shared
+  - git
+  - grib-util
+  - gsl
+  - gsl-lite
+  - hdf5
+  - imagemagick
+  - ip
+  - ip2
+  - jasper
+  - landsfcutil
+  - libgeotiff
+  - libiconv
+  - libjpeg-turbo
+  - libpng
+  - libtiff
+  - libxml2
+  - libxrender
+  - madis
+  - mapl@2.53.4 ^esmf@8.8.0
+  - mbedtls
+  - met
+  - metis
+  - metplus
+  - nccmp
+  - gsi-ncdiag
+  - nco
+  - ncview
+  - nemsio
+  - nemsiogfs
+  - netcdf-c
+  - netcdf-fortran
+  - perl
+  - pigz
+  - parallelio
+  - pixman
+  - proj
+  - python
+  - qhull
+  - readline
+  - rsync
+  - scotch
+  - sfcio
+  - sigio
+  - sp
+  - subversion
+  - udunits
+  - upp
+  - w3emc
+  - w3nco
+  - wgrib2
+  - wrf-io
